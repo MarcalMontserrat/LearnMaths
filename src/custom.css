@@ -1657,7 +1657,7 @@ body::after {
 
   /* Keep 2 columns instead of 1 to avoid 5 stacked mode cards ("muchos cuadros") */
   .mode-grid {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
   }
 
   .mode-card {
@@ -1709,7 +1709,7 @@ body::after {
   /* Compact info pills so operation-meta takes less height */
   .info-pill {
     padding: 5px 9px;
-    font-size: 0.75rem;
+    font-size: 0.8rem;
   }
 
   /* Answer row: input spans full width, submit + hint buttons sit side by side */
