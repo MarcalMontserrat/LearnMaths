@@ -2,7 +2,8 @@ export const SESSION_LENGTH = 10;
 
 export const STORAGE_KEYS = {
   bestStreak: 'learnmaths.bestPerfectStreak',
-  totalStars: 'learnmaths.totalStars'
+  totalStars: 'learnmaths.totalStars',
+  gameMeta: 'learnmaths.gameMeta'
 };
 
 export const MODE_OPTIONS = [
@@ -35,6 +36,12 @@ export const MODE_OPTIONS = [
     title: '3 cifras x 1 cifra',
     description: 'Multiplicaciones como 326 x 3 o 814 x 7.',
     accent: '#ef476f'
+  },
+  {
+    id: 'mulLong',
+    title: '3+ cifras x 2+ cifras',
+    description: 'Multiplicaciones largas como 326 x 24 o 1487 x 36.',
+    accent: '#7f5539'
   }
 ];
 
@@ -42,7 +49,8 @@ export const MODE_LABELS = {
   sum: 'Suma con llevadas',
   sub: 'Resta con prestamos',
   mul2: 'Multiplicacion de 2 cifras',
-  mul3: 'Multiplicacion de 3 cifras'
+  mul3: 'Multiplicacion de 3 cifras',
+  mulLong: 'Multiplicacion larga'
 };
 
 export const SUCCESS_MESSAGES = [

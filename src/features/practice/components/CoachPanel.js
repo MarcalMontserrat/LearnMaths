@@ -1,47 +1,64 @@
 import React from 'react';
 
-export function CoachPanel({ completedCount, mistakes, selectedModeTitle }) {
+export function CoachPanel({
+  completedCount,
+  mistakes,
+  selectedModeTitle,
+  pendingChests,
+  availableStars,
+  activeBoss,
+  latestRewardMessage
+}) {
   return (
     <aside className="coach-card">
       <div>
-        <span className="section-kicker">Panel de juego</span>
-        <h3>Como usarla</h3>
+        <span className="section-kicker">Banquillo</span>
+        <h3>🏀 Estado de la pista</h3>
       </div>
 
       <div className="mini-stats">
         <div className="mini-stat">
-          <span>Retos completados</span>
+          <span>✅ Retos completados</span>
           <strong>{completedCount}</strong>
         </div>
         <div className="mini-stat">
-          <span>Errores en esta cuenta</span>
+          <span>🧮 Errores en esta cuenta</span>
           <strong>{mistakes}</strong>
         </div>
         <div className="mini-stat">
-          <span>Modo elegido</span>
+          <span>🎲 Modo elegido</span>
           <strong>{selectedModeTitle}</strong>
+        </div>
+        <div className="mini-stat">
+          <span>🎁 Cofres listos</span>
+          <strong>{pendingChests}</strong>
+        </div>
+        <div className="mini-stat">
+          <span>💎 Estrellas libres</span>
+          <strong>{availableStars}</strong>
         </div>
       </div>
 
       <div className="coach-note">
         <p>
-          Ideal para rondas cortas de 5 a 10 minutos. Si se atasca en una
-          cuenta, puede usar la pista y repetirla con calma en papel.
+          {activeBoss
+            ? `${activeBoss.title} esta activo. Necesitas ${activeBoss.goalStars} estrellas en su modo para derrotarlo.`
+            : 'Ideal para rondas cortas de 5 a 10 minutos. Sigue el mapa para desbloquear cofres, temas y nuevos rivales.'}
         </p>
       </div>
 
       <div className="tips-list">
         <div className="tip-card">
-          <strong>Sumas y restas</strong>
-          <p>Siempre empieza por la columna de las unidades.</p>
+          <strong>🎯 Desafio diario</strong>
+          <p>Haz una ronda del modo marcado para llevarte la recompensa extra.</p>
         </div>
         <div className="tip-card">
-          <strong>Multiplicaciones</strong>
-          <p>Descompone el numero grande en centenas, decenas y unidades.</p>
+          <strong>🗺️ Ruta del mapa</strong>
+          <p>Las casillas especiales te dan cofres y activan los jefes.</p>
         </div>
         <div className="tip-card">
-          <strong>Ritmo</strong>
-          <p>Mejor pocas cuentas bien hechas que muchas con prisa.</p>
+          <strong>🎉 Ultimo premio</strong>
+          <p>{latestRewardMessage || 'Todavia no has activado ninguna recompensa especial.'}</p>
         </div>
       </div>
     </aside>

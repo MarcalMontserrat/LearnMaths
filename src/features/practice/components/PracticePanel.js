@@ -1,6 +1,8 @@
 import React from 'react';
+import { supportsGuidedNotebook } from '../notebookUtils';
 import { SESSION_LENGTH } from '../config';
 import { getRoundMessage } from '../gameUtils';
+import { GuidedNotebook } from './GuidedNotebook';
 
 export function PracticePanel({
   roundComplete,
@@ -15,12 +17,15 @@ export function PracticePanel({
   showHint,
   feedback,
   mode,
+  roundRewards,
   onAnswerChange,
   onSubmit,
   onToggleHint,
   onRestartRound,
   onNextQuestion
 }) {
+  const showGuidedNotebook = supportsGuidedNotebook(question);
+
   return (
     <article className="practice-card">
       <div className="round-caption">
@@ -32,7 +37,7 @@ export function PracticePanel({
               : `Reto ${completedCount + 1} de ${SESSION_LENGTH}`}
           </h2>
         </div>
-        <div className="score-pill">{roundStars} estrellas</div>
+        <div className="score-pill">🏀 {roundStars} estrellas</div>
       </div>
 
       <div className="progress-track" aria-hidden="true">
@@ -51,6 +56,13 @@ export function PracticePanel({
             Puedes repetir la misma ronda o cambiar de modo para seguir
             practicando otras cuentas.
           </p>
+          {roundRewards.length ? (
+            <div className="summary-rewards">
+              {roundRewards.map((reward) => (
+                <p key={reward}>{reward}</p>
+              ))}
+            </div>
+          ) : null}
           <button className="btn-main" type="button" onClick={() => onRestartRound(mode)}>
             Jugar otra ronda
           </button>
@@ -60,21 +72,30 @@ export function PracticePanel({
           <div className="operation-meta">
             <span className="info-pill strong">{question.label}</span>
             <span className="info-pill">
-              Ahora mismo puedes ganar {currentStarValue} estrellas
+              Esta jugada te puede dar {currentStarValue} estrellas
             </span>
           </div>
 
-          <div className="question-board" aria-live="polite">
-            <div className="question-row">
-              <span className="question-operator" />
-              <span className="question-number">{question.left}</span>
+          {showGuidedNotebook ? (
+            <GuidedNotebook
+              key={`${question.type}-${question.left}-${question.right}`}
+              question={question}
+              isSolved={isSolved}
+              onApplyResult={onAnswerChange}
+            />
+          ) : (
+            <div className="question-board" aria-live="polite">
+              <div className="question-row">
+                <span className="question-operator" />
+                <span className="question-number">{question.left}</span>
+              </div>
+              <div className="question-row">
+                <span className="question-operator">{question.operator}</span>
+                <span className="question-number">{question.right}</span>
+              </div>
+              <div className="question-line" />
             </div>
-            <div className="question-row">
-              <span className="question-operator">{question.operator}</span>
-              <span className="question-number">{question.right}</span>
-            </div>
-            <div className="question-line" />
-          </div>
+          )}
 
           <form className="answer-form" onSubmit={onSubmit}>
             <label className="answer-label" htmlFor="math-answer">
