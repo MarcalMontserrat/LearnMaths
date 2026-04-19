@@ -32,13 +32,28 @@ import {
 
 const INITIAL_FEEDBACK = {
   type: 'neutral',
-  message: 'Elige un modo y resuelve la primera cuenta.'
+  message: ''
 };
 
 const READY_FEEDBACK = {
   type: 'neutral',
   message: 'Resuelve la cuenta y pulsa comprobar.'
 };
+
+const buildQuestionCelebration = (starsEarned, nextPerfectStreak) => ({
+  id: `${Date.now()}-${starsEarned}`,
+  starsEarned,
+  title:
+    starsEarned === 3
+      ? 'Canaston limpio'
+      : starsEarned === 2
+        ? 'Buena jugada'
+        : 'Punto salvado',
+  subtitle:
+    nextPerfectStreak >= 2
+      ? `+${starsEarned} estrellas y racha x${nextPerfectStreak}`
+      : `+${starsEarned} estrellas`
+});
 
 export function usePracticeSession() {
   const [mode, setMode] = useState('mix');
@@ -59,6 +74,8 @@ export function usePracticeSession() {
   const [usedHintInRound, setUsedHintInRound] = useState(false);
   const [roundRewards, setRoundRewards] = useState([]);
   const [latestRewardMessage, setLatestRewardMessage] = useState('');
+  const [questionCelebration, setQuestionCelebration] = useState(null);
+  const [roundOutcome, setRoundOutcome] = useState(null);
   const answerInputRef = useRef(null);
 
   useEffect(() => {
@@ -72,6 +89,18 @@ export function usePracticeSession() {
       answerInputRef.current?.focus();
     }
   }, [question, roundComplete]);
+
+  useEffect(() => {
+    if (!questionCelebration) {
+      return undefined;
+    }
+
+    const timeoutId = setTimeout(() => {
+      setQuestionCelebration(null);
+    }, 1350);
+
+    return () => clearTimeout(timeoutId);
+  }, [questionCelebration]);
 
   const resetQuestionState = (nextMode) => {
     setQuestion(createQuestionForMode(nextMode));
@@ -107,6 +136,8 @@ export function usePracticeSession() {
     setRoundSkillXp(createSkillXpSnapshot());
     setUsedHintInRound(false);
     setRoundRewards([]);
+    setQuestionCelebration(null);
+    setRoundOutcome(null);
     resetQuestionState(nextMode);
   };
 
@@ -125,6 +156,7 @@ export function usePracticeSession() {
       return;
     }
 
+    setQuestionCelebration(null);
     resetQuestionState(mode);
   };
 
@@ -138,7 +170,9 @@ export function usePracticeSession() {
     if (!/^\d+$/.test(answer.trim())) {
       setFeedback({
         type: 'error',
-        message: 'Escribe solo numeros en la respuesta.'
+        message: answer.trim()
+          ? 'Escribe solo numeros en el resultado.'
+          : 'Completa el resultado en la fila final antes de comprobar.'
       });
       return;
     }
@@ -155,6 +189,7 @@ export function usePracticeSession() {
       let nextTotalStars = totalStars + starsEarned;
       let nextMeta = meta;
       let nextRoundRewards = [];
+      let nextRoundOutcome = null;
 
       setCompletedCount(nextCompletedCount);
       setRoundStars(nextRoundStars);
@@ -162,6 +197,9 @@ export function usePracticeSession() {
       setBestStreak(nextBestStreak);
       setRoundSkillXp(nextRoundSkillXp);
       setIsSolved(true);
+      setQuestionCelebration(
+        buildQuestionCelebration(starsEarned, nextPerfectStreak)
+      );
       setFeedback({
         type: 'success',
         message: `${pickOne(SUCCESS_MESSAGES)} Has ganado ${starsEarned} estrellas.`
@@ -182,9 +220,11 @@ export function usePracticeSession() {
         nextMeta = roundProgress.nextMeta;
         nextTotalStars += roundProgress.bonusStars;
         nextRoundRewards = roundProgress.rewards;
+        nextRoundOutcome = roundProgress.seasonResult;
 
         setMeta(nextMeta);
         setRoundRewards(nextRoundRewards);
+        setRoundOutcome(nextRoundOutcome);
         if (nextRoundRewards.length) {
           setLatestRewardMessage(nextRoundRewards[nextRoundRewards.length - 1]);
         }
@@ -276,6 +316,8 @@ export function usePracticeSession() {
     pendingChests: meta.pendingChests,
     latestRewardMessage,
     roundRewards,
+    questionCelebration,
+    roundOutcome,
     seasonCard: buildSeasonCard(meta),
     skillCards: buildSkillCards(meta),
     missionCards: buildMissionCards(meta, getTodayKey()),

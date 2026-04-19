@@ -33,6 +33,7 @@ describe('gamificationUtils season flow', () => {
     expect(result.nextMeta.seasonWins).toBe(1);
     expect(result.nextMeta.totalSeasonWins).toBe(1);
     expect(result.bonusStars).toBeGreaterThanOrEqual(4);
+    expect(result.seasonResult.status).toBe('won');
   });
 
   it('starts a new season after winning the final match', () => {
@@ -55,6 +56,7 @@ describe('gamificationUtils season flow', () => {
     expect(result.nextMeta.seasonTitles).toBe(1);
     expect(result.nextMeta.seasonGameIndex).toBe(0);
     expect(result.nextMeta.seasonWins).toBe(0);
+    expect(result.seasonResult.status).toBe('title');
   });
 
   it('builds a season card around the current match', () => {
@@ -67,8 +69,26 @@ describe('gamificationUtils season flow', () => {
 
     expect(seasonCard.number).toBe(1);
     expect(seasonCard.titles).toBe(1);
+    expect(seasonCard.progressPercentage).toBeCloseTo(33.333, 1);
     expect(seasonCard.currentMatch.title).toBe('Jornada 3');
     expect(seasonCard.schedule[0].status).toBe('won');
     expect(seasonCard.schedule[2].status).toBe('current');
+  });
+
+  it('keeps the match open when the round does not reach the target', () => {
+    const meta = createDefaultGameMeta('2026-04-19');
+
+    const result = applyRoundProgress(
+      meta,
+      buildRoundSummary({
+        selectedMode: 'sum',
+        roundStars: 14
+      }),
+      '2026-04-19'
+    );
+
+    expect(result.nextMeta.seasonGameIndex).toBe(0);
+    expect(result.nextMeta.seasonWins).toBe(0);
+    expect(result.seasonResult.status).toBe('lost');
   });
 });

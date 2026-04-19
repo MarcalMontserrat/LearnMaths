@@ -3,7 +3,8 @@ export const SESSION_LENGTH = 10;
 export const STORAGE_KEYS = {
   bestStreak: 'learnmaths.bestPerfectStreak',
   totalStars: 'learnmaths.totalStars',
-  gameMeta: 'learnmaths.gameMeta'
+  gameMeta: 'learnmaths.gameMeta',
+  seasonGuideSeen: 'learnmaths.seasonGuideSeen'
 };
 
 export const MODE_OPTIONS = [

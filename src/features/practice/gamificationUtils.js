@@ -59,7 +59,7 @@ export const SEASON_MATCHES = [
     title: 'Jornada 1',
     subtitle: 'Ataque con sumas',
     mode: 'sum',
-    goalStars: 18,
+    goalStars: 16,
     rewardStars: 4
   },
   {
@@ -67,7 +67,7 @@ export const SEASON_MATCHES = [
     title: 'Jornada 2',
     subtitle: 'Defensa con restas',
     mode: 'sub',
-    goalStars: 18,
+    goalStars: 16,
     rewardStars: 4
   },
   {
@@ -75,7 +75,7 @@ export const SEASON_MATCHES = [
     title: 'Jornada 3',
     subtitle: 'Contraataque x1',
     mode: 'mul2',
-    goalStars: 18,
+    goalStars: 17,
     rewardStars: 5
   },
   {
@@ -83,7 +83,7 @@ export const SEASON_MATCHES = [
     title: 'Jornada 4',
     subtitle: 'Triple de 3 cifras',
     mode: 'mul3',
-    goalStars: 20,
+    goalStars: 18,
     rewardStars: 6
   },
   {
@@ -91,7 +91,7 @@ export const SEASON_MATCHES = [
     title: 'Semifinal',
     subtitle: 'Multiplicacion larga bajo presion',
     mode: 'mulLong',
-    goalStars: 18,
+    goalStars: 16,
     rewardStars: 8,
     rewardChest: 1
   },
@@ -100,7 +100,7 @@ export const SEASON_MATCHES = [
     title: 'Final',
     subtitle: 'Partido mixto para levantar la copa',
     mode: 'mix',
-    goalStars: 22,
+    goalStars: 20,
     rewardStars: 12,
     rewardChest: 1
   }
@@ -313,7 +313,7 @@ export const getLeagueTier = (seasonNumber) =>
   LEAGUE_TIERS[Math.min(LEAGUE_TIERS.length - 1, Math.floor((seasonNumber - 1) / 2))];
 
 export const buildSeasonSchedule = (seasonNumber) => {
-  const difficultyBoost = Math.min(6, Math.floor((seasonNumber - 1) / 2) * 2);
+  const difficultyBoost = Math.min(4, Math.floor((seasonNumber - 1) / 3) * 2);
 
   return SEASON_MATCHES.map((match, index) => ({
     ...match,
@@ -498,6 +498,27 @@ export const applyRoundProgress = (meta, roundSummary, dateKey = getTodayKey()) 
   const nextMeta = normalizeGameMeta(meta, dateKey);
   const rewards = [];
   let bonusStars = 0;
+  const seasonCardBefore = buildSeasonCard(nextMeta);
+  const currentMatch = seasonCardBefore.currentMatch;
+  const seasonResult = currentMatch
+    ? {
+        status: 'off-match',
+        seasonNumber: seasonCardBefore.number,
+        leagueTitle: seasonCardBefore.leagueTitle,
+        matchTitle: currentMatch.title,
+        matchMode: currentMatch.mode,
+        matchModeLabel: currentMatch.modeLabel,
+        goalStars: currentMatch.goalStars,
+        achievedStars: roundSummary.roundStars,
+        nextMatchTitle: currentMatch.title
+      }
+    : {
+        status: 'idle',
+        seasonNumber: seasonCardBefore.number,
+        leagueTitle: seasonCardBefore.leagueTitle,
+        achievedStars: roundSummary.roundStars,
+        nextMatchTitle: null
+      };
 
   nextMeta.playedDates = addPlayedDate(nextMeta.playedDates, dateKey);
   nextMeta.totalRoundsCompleted += 1;
@@ -544,13 +565,12 @@ export const applyRoundProgress = (meta, roundSummary, dateKey = getTodayKey()) 
     );
   }
 
-  const currentMatch = buildSeasonSchedule(nextMeta.seasonNumber)[nextMeta.seasonGameIndex];
-
   if (
     currentMatch &&
     roundSummary.selectedMode === currentMatch.mode &&
     roundSummary.roundStars >= currentMatch.goalStars
   ) {
+    seasonResult.status = 'won';
     nextMeta.seasonWins += 1;
     nextMeta.totalSeasonWins += 1;
     nextMeta.seasonGameIndex += 1;
@@ -567,6 +587,10 @@ export const applyRoundProgress = (meta, roundSummary, dateKey = getTodayKey()) 
       const leagueTier = getLeagueTier(completedSeasonNumber);
       const titleReward = 16 + Math.min(10, completedSeasonNumber * 2);
 
+      seasonResult.status = 'title';
+      seasonResult.titleReward = titleReward;
+      seasonResult.completedSeasonNumber = completedSeasonNumber;
+      seasonResult.completedLeagueTitle = leagueTier.title;
       nextMeta.seasonTitles += 1;
       nextMeta.pendingChests += 1;
       bonusStars += titleReward;
@@ -582,15 +606,27 @@ export const applyRoundProgress = (meta, roundSummary, dateKey = getTodayKey()) 
     roundSummary.selectedMode === currentMatch.mode &&
     roundSummary.roundStars < currentMatch.goalStars
   ) {
+    seasonResult.status = 'lost';
     rewards.push(
       `${currentMatch.title}: necesitabas ${currentMatch.goalStars} estrellas y has conseguido ${roundSummary.roundStars}. Vuelve a intentarlo para avanzar en la temporada.`
     );
+  } else if (currentMatch) {
+    rewards.push(
+      `Esta ronda suma entrenamiento, pero el partido actual pide ${currentMatch.modeLabel.toLowerCase()}.`
+    );
   }
+
+  const seasonCardAfter = buildSeasonCard(nextMeta);
+  seasonResult.nextMatchTitle = seasonCardAfter.currentMatch?.title ?? null;
+  seasonResult.nextMatchModeLabel = seasonCardAfter.currentMatch?.modeLabel ?? null;
+  seasonResult.seasonWins = seasonCardAfter.wins;
+  seasonResult.totalMatches = seasonCardAfter.totalMatches;
 
   return {
     nextMeta: normalizeGameMeta(nextMeta, dateKey),
     bonusStars,
-    rewards
+    rewards,
+    seasonResult
   };
 };
 
@@ -713,6 +749,7 @@ export const buildSeasonCard = (meta) => {
     titles: meta.seasonTitles,
     wins: meta.seasonWins,
     totalMatches: schedule.length,
+    progressPercentage: (meta.seasonWins / schedule.length) * 100,
     currentMatch: currentMatch
       ? {
           ...currentMatch,
