@@ -1635,28 +1635,34 @@ body::after {
   }
 
   .math-page {
-    gap: 26px;
+    gap: 22px;
   }
 
   .hero-copy,
   .hero-panel,
-  .practice-card,
   .coach-card,
   .meta-card {
     padding: 24px;
+  }
+
+  /* More compact practice card so the operation fits without scrolling */
+  .practice-card {
+    padding: 16px;
+    gap: 12px;
   }
 
   .hero-copy {
     gap: 18px;
   }
 
+  /* Keep 2 columns instead of 1 to avoid 5 stacked mode cards ("muchos cuadros") */
   .mode-grid {
-    grid-template-columns: 1fr;
+    grid-template-columns: repeat(2, minmax(120px, 1fr));
   }
 
   .mode-card {
     min-height: auto;
-    padding: 20px 20px 20px 24px;
+    padding: 18px 18px 18px 22px;
   }
 
   .meta-tabs {
@@ -1664,9 +1670,7 @@ body::after {
     grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
-  .round-caption,
   .panel-top,
-  .answer-row,
   .notebook-header,
   .season-cta-row,
   .summary-actions {
@@ -1678,18 +1682,19 @@ body::after {
     text-align: left;
   }
 
+  /* Smaller operation numbers so they fit on screen */
   .question-row {
-    grid-template-columns: 30px 1fr;
-    font-size: 2.5rem;
+    grid-template-columns: 26px 1fr;
+    font-size: 2rem;
   }
 
   .question-board {
     width: 100%;
-    padding: 24px 22px;
+    padding: 16px 14px;
   }
 
   .notebook-panel {
-    padding: 20px;
+    padding: 16px;
   }
 
   .question-celebration,
@@ -1701,8 +1706,27 @@ body::after {
     grid-template-columns: 82px repeat(var(--notebook-columns), minmax(42px, 48px));
   }
 
+  /* Compact info pills so operation-meta takes less height */
+  .info-pill {
+    padding: 5px 9px;
+    font-size: 0.8rem;
+  }
+
+  /* Answer row: input spans full width, submit + hint buttons sit side by side */
+  .answer-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+  }
+
+  .answer-input {
+    grid-column: 1 / -1;
+  }
+
+  /* Compact buttons; full-width only where the parent stretches them */
   .btn-main,
   .btn-secondary {
-    width: 100%;
+    min-height: 48px;
+    padding: 12px 14px;
   }
 }
