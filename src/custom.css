@@ -426,6 +426,11 @@ body::after {
   font-size: 1.8rem;
 }
 
+.mini-stat strong {
+  font-size: clamp(1.05rem, 2.5vw, 1.25rem);
+  text-align: right;
+}
+
 .mode-grid {
   display: grid;
   grid-template-columns: repeat(5, minmax(0, 1fr));
@@ -1196,6 +1201,93 @@ body::after {
   background: rgba(42, 168, 118, 0.1);
 }
 
+.season-summary,
+.season-current-match {
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.74);
+}
+
+.season-summary {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+}
+
+.season-summary p,
+.season-current-match p,
+.season-match p {
+  margin: 6px 0 0;
+  line-height: 1.6;
+}
+
+.season-scoreboard {
+  min-width: 112px;
+  padding: 12px 14px;
+  border-radius: 18px;
+  background: rgba(23, 50, 77, 0.08);
+  text-align: center;
+}
+
+.season-scoreboard span {
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 800;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.season-scoreboard strong {
+  display: block;
+  margin-top: 4px;
+  font-size: 1.85rem;
+}
+
+.season-current-match {
+  background: rgba(255, 122, 24, 0.08);
+}
+
+.season-schedule {
+  display: grid;
+  gap: 14px;
+}
+
+.season-match {
+  padding: 16px 18px;
+  border: 1px solid var(--line);
+  border-radius: 20px;
+  background: rgba(255, 255, 255, 0.72);
+}
+
+.season-match-top {
+  display: flex;
+  justify-content: space-between;
+  gap: 14px;
+  align-items: flex-start;
+}
+
+.season-match-top span {
+  padding: 6px 10px;
+  border-radius: 999px;
+  background: rgba(23, 50, 77, 0.08);
+  font-size: 0.88rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.season-match.is-won {
+  border-color: rgba(42, 168, 118, 0.24);
+  background: rgba(42, 168, 118, 0.1);
+}
+
+.season-match.is-current {
+  border-color: rgba(255, 122, 24, 0.26);
+  box-shadow: inset 0 0 0 2px rgba(255, 122, 24, 0.08);
+  background: rgba(255, 244, 224, 0.92);
+}
+
 .map-strip {
   display: grid;
   grid-auto-flow: column;
@@ -1246,6 +1338,26 @@ body::after {
 .badge-grid {
   display: grid;
   gap: 16px;
+}
+
+.basketball-page .season-summary,
+.basketball-page .season-current-match,
+.basketball-page .season-match {
+  border-color: rgba(126, 72, 39, 0.14);
+  background: rgba(255, 252, 246, 0.78);
+}
+
+.basketball-page .season-current-match {
+  background: rgba(203, 106, 24, 0.08);
+}
+
+.basketball-page .season-scoreboard {
+  background: linear-gradient(180deg, rgba(20, 29, 44, 0.96), rgba(31, 42, 64, 0.92));
+  color: #ffd166;
+}
+
+.basketball-page .season-scoreboard strong {
+  color: #fff8e8;
 }
 
 .badge-grid {
@@ -1314,6 +1426,8 @@ body::after {
   }
 
   .weekly-strip,
+  .season-summary,
+  .season-match-top,
   .skill-top,
   .mission-top,
   .theme-actions {

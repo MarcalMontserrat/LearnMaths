@@ -14,7 +14,8 @@ Aplicacion web pequena para practicar matematicas de primaria en el navegador.
 
 - React 18
 - React Router 6
-- Create React App (`react-scripts`)
+- Vite
+- Vitest
 - ESLint
 
 ## Scripts
@@ -23,7 +24,7 @@ Aplicacion web pequena para practicar matematicas de primaria en el navegador.
 npm install
 npm start
 npm run lint
-npm test -- --watch=false
+npm test
 npm run build
 ```
 
@@ -31,29 +32,29 @@ npm run build
 
 ```text
 src/
-  App.js
-  AppRoutes.js
+  App.jsx
+  AppRoutes.jsx
   components/
-    Layout.js
+    Layout.jsx
   features/
     practice/
-      Home.js
+      Home.jsx
       config.js
       gameUtils.js
       hooks/
         usePracticeSession.js
       components/
-        CoachPanel.js
-        HeroSection.js
-        ModeGrid.js
-        PracticePanel.js
+        CoachPanel.jsx
+        HeroSection.jsx
+        ModeGrid.jsx
+        PracticePanel.jsx
   custom.css
-  index.js
+  index.jsx
 ```
 
 ## Organizacion actual
 
-- `src/features/practice/Home.js` compone la pantalla principal.
+- `src/features/practice/Home.jsx` compone la pantalla principal.
 - `src/features/practice/hooks/usePracticeSession.js` concentra el estado y las acciones de la ronda.
 - `src/features/practice/gameUtils.js` contiene la generacion de ejercicios y reglas de puntuacion.
 - `src/features/practice/config.js` mantiene modos, textos y claves de almacenamiento.

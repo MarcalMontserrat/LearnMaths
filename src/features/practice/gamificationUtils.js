@@ -30,6 +30,82 @@ export const THEME_OPTIONS = [
   }
 ];
 
+export const LEAGUE_TIERS = [
+  {
+    id: 'patio',
+    title: 'Liga del patio',
+    subtitle: 'Las primeras victorias del equipo'
+  },
+  {
+    id: 'barrio',
+    title: 'Liga del barrio',
+    subtitle: 'Rivales mas serios y ritmo constante'
+  },
+  {
+    id: 'escolar',
+    title: 'Liga escolar',
+    subtitle: 'Cada partido exige mas precision'
+  },
+  {
+    id: 'regional',
+    title: 'Copa regional',
+    subtitle: 'La parte alta de la temporada'
+  }
+];
+
+export const SEASON_MATCHES = [
+  {
+    id: 'open-sum',
+    title: 'Jornada 1',
+    subtitle: 'Ataque con sumas',
+    mode: 'sum',
+    goalStars: 18,
+    rewardStars: 4
+  },
+  {
+    id: 'open-sub',
+    title: 'Jornada 2',
+    subtitle: 'Defensa con restas',
+    mode: 'sub',
+    goalStars: 18,
+    rewardStars: 4
+  },
+  {
+    id: 'open-mul2',
+    title: 'Jornada 3',
+    subtitle: 'Contraataque x1',
+    mode: 'mul2',
+    goalStars: 18,
+    rewardStars: 5
+  },
+  {
+    id: 'open-mul3',
+    title: 'Jornada 4',
+    subtitle: 'Triple de 3 cifras',
+    mode: 'mul3',
+    goalStars: 20,
+    rewardStars: 6
+  },
+  {
+    id: 'semi-long',
+    title: 'Semifinal',
+    subtitle: 'Multiplicacion larga bajo presion',
+    mode: 'mulLong',
+    goalStars: 18,
+    rewardStars: 8,
+    rewardChest: 1
+  },
+  {
+    id: 'final-mix',
+    title: 'Final',
+    subtitle: 'Partido mixto para levantar la copa',
+    mode: 'mix',
+    goalStars: 22,
+    rewardStars: 12,
+    rewardChest: 1
+  }
+];
+
 export const MAP_NODES = [
   {
     id: 'start',
@@ -156,6 +232,24 @@ export const BADGE_OPTIONS = [
     isUnlocked: (meta) => meta.perfectRounds >= 1
   },
   {
+    id: 'season-debut',
+    title: 'Debut con victoria',
+    description: 'Gana tu primer partido de temporada.',
+    isUnlocked: (meta) => meta.totalSeasonWins >= 1
+  },
+  {
+    id: 'season-champion',
+    title: 'Campeona de liga',
+    description: 'Completa tu primera temporada.',
+    isUnlocked: (meta) => meta.seasonTitles >= 1
+  },
+  {
+    id: 'dynasty',
+    title: 'Dinastia escolar',
+    description: 'Completa 3 temporadas.',
+    isUnlocked: (meta) => meta.seasonTitles >= 3
+  },
+  {
     id: 'sum-queen',
     title: 'Reina de las llevadas',
     description: 'Lleva sumas al nivel 3.',
@@ -172,18 +266,6 @@ export const BADGE_OPTIONS = [
     title: 'Multiplicadora experta',
     description: 'Lleva multiplicacion larga al nivel 3.',
     isUnlocked: (meta) => getSkillLevel(meta.skillXp.mulLong) >= 3
-  },
-  {
-    id: 'explorer',
-    title: 'Exploradora del mapa',
-    description: 'Avanza 10 casillas del mapa.',
-    isUnlocked: (meta) => meta.mapPosition >= 10
-  },
-  {
-    id: 'boss-hunter',
-    title: 'Cazajefes',
-    description: 'Derrota 2 jefes del mapa.',
-    isUnlocked: (meta) => meta.bossesDefeated >= 2
   },
   {
     id: 'daily-hero',
@@ -226,6 +308,22 @@ export const getTodayKey = (currentDate = new Date()) =>
 
 export const getModeLabel = (modeId) =>
   MODE_OPTIONS.find((option) => option.id === modeId)?.title ?? modeId;
+
+export const getLeagueTier = (seasonNumber) =>
+  LEAGUE_TIERS[Math.min(LEAGUE_TIERS.length - 1, Math.floor((seasonNumber - 1) / 2))];
+
+export const buildSeasonSchedule = (seasonNumber) => {
+  const difficultyBoost = Math.min(6, Math.floor((seasonNumber - 1) / 2) * 2);
+
+  return SEASON_MATCHES.map((match, index) => ({
+    ...match,
+    goalStars: Math.min(
+      30,
+      match.goalStars + (index >= SEASON_MATCHES.length - 2 ? Math.floor(difficultyBoost / 2) : difficultyBoost)
+    ),
+    rewardStars: match.rewardStars + Math.floor((seasonNumber - 1) / 2)
+  }));
+};
 
 export const getSkillLevel = (xp) => Math.floor(xp / 120) + 1;
 
@@ -285,6 +383,11 @@ export const createDefaultGameMeta = (dateKey = getTodayKey()) => ({
   totalDailyChallengesCompleted: 0,
   bestStreakRecord: 0,
   lastChestReward: null,
+  seasonNumber: 1,
+  seasonGameIndex: 0,
+  seasonWins: 0,
+  totalSeasonWins: 0,
+  seasonTitles: 0,
   dailyChallenge: createDailyChallenge(dateKey)
 });
 
@@ -391,25 +494,6 @@ const addPlayedDate = (playedDates, dateKey) => {
   return [...playedDates, dateKey].slice(-30);
 };
 
-const findMapNode = (position) => MAP_NODES[position % MAP_NODES.length];
-
-const createBossState = (node, mapPosition) => ({
-  id: `${node.id}-${mapPosition}`,
-  mapPosition,
-  mode: node.mode,
-  title: node.label,
-  subtitle: node.subtitle,
-  goalStars: node.goalStars,
-  rewardStars: node.rewardStars
-});
-
-const canDefeatBoss = (activeBoss, roundSummary) =>
-  Boolean(
-    activeBoss &&
-      roundSummary.selectedMode === activeBoss.mode &&
-      roundSummary.roundStars >= activeBoss.goalStars
-  );
-
 export const applyRoundProgress = (meta, roundSummary, dateKey = getTodayKey()) => {
   const nextMeta = normalizeGameMeta(meta, dateKey);
   const rewards = [];
@@ -441,16 +525,6 @@ export const applyRoundProgress = (meta, roundSummary, dateKey = getTodayKey()) 
     nextMeta.noHintRounds += 1;
   }
 
-  if (canDefeatBoss(nextMeta.activeBoss, roundSummary)) {
-    nextMeta.bossesDefeated += 1;
-    nextMeta.pendingChests += 1;
-    bonusStars += nextMeta.activeBoss.rewardStars;
-    rewards.push(
-      `Has derrotado a ${nextMeta.activeBoss.title} y ganas ${nextMeta.activeBoss.rewardStars} estrellas extra.`
-    );
-    nextMeta.activeBoss = null;
-  }
-
   const dailyChallenge = createDailyChallenge(dateKey);
   const alreadyCompletedToday = nextMeta.dailyChallengeHistory.includes(dateKey);
 
@@ -470,21 +544,46 @@ export const applyRoundProgress = (meta, roundSummary, dateKey = getTodayKey()) 
     );
   }
 
-  nextMeta.mapPosition += 1;
+  const currentMatch = buildSeasonSchedule(nextMeta.seasonNumber)[nextMeta.seasonGameIndex];
 
-  const landedNode = findMapNode(nextMeta.mapPosition);
-
-  if (landedNode.type === 'chest') {
-    nextMeta.pendingChests += 1;
-    rewards.push(`Has llegado a ${landedNode.label}. Se anade 1 cofre.`);
-  }
-
-  if (landedNode.type === 'boss' && !nextMeta.activeBoss) {
-    nextMeta.activeBoss = createBossState(landedNode, nextMeta.mapPosition);
+  if (
+    currentMatch &&
+    roundSummary.selectedMode === currentMatch.mode &&
+    roundSummary.roundStars >= currentMatch.goalStars
+  ) {
+    nextMeta.seasonWins += 1;
+    nextMeta.totalSeasonWins += 1;
+    nextMeta.seasonGameIndex += 1;
+    bonusStars += currentMatch.rewardStars;
+    nextMeta.pendingChests += currentMatch.rewardChest ?? 0;
     rewards.push(
-      `${landedNode.label} te espera. Completa una ronda de ${getModeLabel(
-        landedNode.mode
-      ).toLowerCase()} con ${landedNode.goalStars} estrellas para derrotarla.`
+      `Victoria en ${currentMatch.title}: ${currentMatch.rewardStars} estrellas extra${
+        currentMatch.rewardChest ? ` y ${currentMatch.rewardChest} cofre` : ''
+      }.`
+    );
+
+    if (nextMeta.seasonGameIndex >= SEASON_MATCHES.length) {
+      const completedSeasonNumber = nextMeta.seasonNumber;
+      const leagueTier = getLeagueTier(completedSeasonNumber);
+      const titleReward = 16 + Math.min(10, completedSeasonNumber * 2);
+
+      nextMeta.seasonTitles += 1;
+      nextMeta.pendingChests += 1;
+      bonusStars += titleReward;
+      rewards.push(
+        `Has ganado la temporada ${completedSeasonNumber} de ${leagueTier.title}. Premio final: ${titleReward} estrellas y 1 cofre.`
+      );
+      nextMeta.seasonNumber += 1;
+      nextMeta.seasonGameIndex = 0;
+      nextMeta.seasonWins = 0;
+    }
+  } else if (
+    currentMatch &&
+    roundSummary.selectedMode === currentMatch.mode &&
+    roundSummary.roundStars < currentMatch.goalStars
+  ) {
+    rewards.push(
+      `${currentMatch.title}: necesitabas ${currentMatch.goalStars} estrellas y has conseguido ${roundSummary.roundStars}. Vuelve a intentarlo para avanzar en la temporada.`
     );
   }
 
@@ -601,6 +700,38 @@ export const getWeeklyProgress = (meta, dateKey = getTodayKey()) => {
   };
 };
 
+export const buildSeasonCard = (meta) => {
+  const seasonNumber = Math.max(1, meta.seasonNumber);
+  const leagueTier = getLeagueTier(seasonNumber);
+  const schedule = buildSeasonSchedule(seasonNumber);
+  const currentMatch = schedule[meta.seasonGameIndex] ?? null;
+
+  return {
+    number: seasonNumber,
+    leagueTitle: leagueTier.title,
+    leagueSubtitle: leagueTier.subtitle,
+    titles: meta.seasonTitles,
+    wins: meta.seasonWins,
+    totalMatches: schedule.length,
+    currentMatch: currentMatch
+      ? {
+          ...currentMatch,
+          modeLabel: getModeLabel(currentMatch.mode)
+        }
+      : null,
+    schedule: schedule.map((match, index) => ({
+      ...match,
+      modeLabel: getModeLabel(match.mode),
+      status:
+        index < meta.seasonGameIndex
+          ? 'won'
+          : index === meta.seasonGameIndex
+            ? 'current'
+            : 'upcoming'
+    }))
+  };
+};
+
 export const buildSkillCards = (meta) =>
   CORE_MODES.map((modeId) => ({
     id: modeId,
@@ -612,11 +743,22 @@ export const buildSkillCards = (meta) =>
 export const buildMissionCards = (meta, dateKey = getTodayKey()) => {
   const dailyChallenge = createDailyChallenge(dateKey);
   const isDailyComplete = meta.dailyChallengeHistory.includes(dateKey);
-  const distinctModes = CORE_MODES.filter(
-    (modeId) => meta.modeRoundsCompleted[modeId] > 0
-  ).length;
+  const seasonCard = buildSeasonCard(meta);
 
   return [
+    {
+      id: 'season',
+      title: `${seasonCard.leagueTitle} · Temporada ${seasonCard.number}`,
+      description: seasonCard.currentMatch
+        ? `${seasonCard.currentMatch.title}: juega ${getModeLabel(
+            seasonCard.currentMatch.mode
+          ).toLowerCase()} y consigue ${seasonCard.currentMatch.goalStars} estrellas para avanzar.`
+        : 'Temporada completada. Empieza la siguiente.',
+      progress: seasonCard.wins,
+      goal: seasonCard.totalMatches,
+      progressLabel: `${seasonCard.wins}/${seasonCard.totalMatches} victorias`,
+      complete: seasonCard.wins >= seasonCard.totalMatches
+    },
     {
       id: 'daily',
       title: dailyChallenge.title,
@@ -638,13 +780,13 @@ export const buildMissionCards = (meta, dateKey = getTodayKey()) => {
       complete: meta.perfectRounds >= 1
     },
     {
-      id: 'explorer',
-      title: `Explora los ${CORE_MODES.length} modos`,
-      description: 'Termina al menos una ronda en cada habilidad principal.',
-      progress: distinctModes,
-      goal: CORE_MODES.length,
-      progressLabel: `${distinctModes}/${CORE_MODES.length}`,
-      complete: distinctModes >= CORE_MODES.length
+      id: 'titles',
+      title: 'Levanta la copa',
+      description: 'Completa una temporada entera del calendario.',
+      progress: Math.min(meta.seasonTitles, 1),
+      goal: 1,
+      progressLabel: `${Math.min(meta.seasonTitles, 1)}/1`,
+      complete: meta.seasonTitles >= 1
     },
     {
       id: 'no-hints',
@@ -656,13 +798,13 @@ export const buildMissionCards = (meta, dateKey = getTodayKey()) => {
       complete: meta.noHintRounds >= 5
     },
     {
-      id: 'bosses',
-      title: 'Cazajefes',
-      description: 'Derrota 2 jefes del mapa.',
-      progress: Math.min(meta.bossesDefeated, 2),
-      goal: 2,
-      progressLabel: `${Math.min(meta.bossesDefeated, 2)}/2`,
-      complete: meta.bossesDefeated >= 2
+      id: 'wins',
+      title: 'Cadena de victorias',
+      description: 'Gana 3 partidos de temporada.',
+      progress: Math.min(meta.totalSeasonWins, 3),
+      goal: 3,
+      progressLabel: `${Math.min(meta.totalSeasonWins, 3)}/3`,
+      complete: meta.totalSeasonWins >= 3
     },
     {
       id: 'chests',
