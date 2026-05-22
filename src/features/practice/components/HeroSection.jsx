@@ -13,10 +13,10 @@ export function HeroSection({
   return (
     <section className="hero">
       <div className="hero-copy">
-        <span className="eyebrow">Entrena en la pista de 3o de primaria</span>
-        <h1>Mision Matematica</h1>
+        <span className="eyebrow">Entrena en la pista de 3.º de primaria</span>
+        <h1>Misión Matemática</h1>
         <p>
-          Una pagina pensada para practicar sumas, restas y multiplicaciones
+          Una página pensada para practicar sumas, restas y multiplicaciones
           como si cada ronda fuera una jugada: corta, clara y con un marcador
           que te deja ver el progreso sin distracciones.
         </p>

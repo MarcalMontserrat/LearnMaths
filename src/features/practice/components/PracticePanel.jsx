@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import { supportsGuidedNotebook } from '../notebookUtils';
 import { SESSION_LENGTH } from '../config';
 import { getRoundMessage } from '../gameUtils';
@@ -78,8 +78,15 @@ export function PracticePanel({
   onNextQuestion,
   onPlayCurrentMatch
 }) {
+  const nextButtonRef = useRef(null);
   const showGuidedNotebook = supportsGuidedNotebook(question);
   const summaryContent = getRoundSummaryContent(roundStars, roundOutcome);
+
+  useEffect(() => {
+    if (isSolved && !roundComplete) {
+      nextButtonRef.current?.focus();
+    }
+  }, [isSolved, roundComplete]);
 
   return (
     <article className="practice-card">
@@ -191,17 +198,20 @@ export function PracticePanel({
           <form className="answer-form" onSubmit={onSubmit}>
             <div className="answer-row">
               {showGuidedNotebook ? null : (
-                <input
-                  id="math-answer"
-                  ref={answerInputRef}
-                  className="answer-input"
-                  inputMode="numeric"
-                  pattern="[0-9]*"
-                  autoComplete="off"
-                  value={answer}
-                  onChange={(event) => onAnswerChange(event.target.value)}
-                  disabled={isSolved}
-                />
+                <>
+                  <label htmlFor="math-answer" className="sr-only">Respuesta</label>
+                  <input
+                    id="math-answer"
+                    ref={answerInputRef}
+                    className="answer-input"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    autoComplete="off"
+                    value={answer}
+                    onChange={(event) => onAnswerChange(event.target.value)}
+                    disabled={isSolved}
+                  />
+                </>
               )}
               <button className="btn-main" type="submit" disabled={isSolved}>
                 Comprobar
@@ -224,7 +234,7 @@ export function PracticePanel({
           ) : null}
 
           {isSolved ? (
-            <button className="btn-main" type="button" onClick={onNextQuestion}>
+            <button ref={nextButtonRef} className="btn-main" type="button" onClick={onNextQuestion}>
               {completedCount >= SESSION_LENGTH ? 'Ver resumen' : 'Siguiente reto'}
             </button>
           ) : null}

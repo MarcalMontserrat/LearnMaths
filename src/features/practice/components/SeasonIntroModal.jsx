@@ -14,7 +14,7 @@ export function SeasonIntroModal({
         aria-labelledby="season-guide-title"
       >
         <span className="section-kicker">Bienvenida a la temporada</span>
-        <h2 id="season-guide-title">🏀 Asi se gana la liga</h2>
+        <h2 id="season-guide-title">🏀 Así se gana la liga</h2>
         <p>
           Tu objetivo principal no es solo hacer cuentas: es ganar partidos y
           completar el calendario para levantar una copa.
@@ -24,7 +24,7 @@ export function SeasonIntroModal({
           <article className="season-guide-step">
             <strong>1. Juega el partido actual</strong>
             <p>
-              Cada partido pide un modo concreto y un minimo de estrellas.
+              Cada partido pide un modo concreto y un mínimo de estrellas.
             </p>
           </article>
           <article className="season-guide-step">

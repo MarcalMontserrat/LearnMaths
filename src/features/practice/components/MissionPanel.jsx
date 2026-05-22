@@ -21,9 +21,9 @@ export function MissionPanel({ missions, weeklyProgress }) {
       <div className="weekly-strip">
         <div>
           <strong>📅 Semana en marcha</strong>
-          <p>{weeklyProgress.playedCount} de 7 dias con juego</p>
+          <p>{weeklyProgress.playedCount} de 7 días con juego</p>
         </div>
-        <div className="weekly-days" aria-label="Dias jugados esta semana">
+        <div className="weekly-days" aria-label="Días jugados esta semana">
           {weeklyProgress.recentDays.map((day) => (
             <span
               key={day.dayKey}

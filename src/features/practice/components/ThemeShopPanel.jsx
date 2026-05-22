@@ -10,7 +10,7 @@ export function ThemeShopPanel({
     <section className="meta-card">
       <div>
         <span className="section-kicker">Vestuario</span>
-        <h3>🎨 Equipacion y ambiente</h3>
+        <h3>🎨 Equipación y ambiente</h3>
       </div>
 
       <div className="wallet-box">

@@ -61,7 +61,7 @@ export function Home() {
   );
 
   useEffect(() => {
-    document.title = 'Mision Matematica';
+    document.title = 'Misión Matemática';
   }, []);
 
   const selectedMode = MODE_OPTIONS.find((option) => option.id === mode);
@@ -141,37 +141,45 @@ export function Home() {
         <div className="meta-hub">
           <div className="meta-tabs" role="tablist" aria-label="Paneles de juego">
             <button
+              id="tab-season"
               className={`meta-tab ${activeMetaTab === 'season' ? 'is-active' : ''}`}
               type="button"
               role="tab"
               aria-selected={activeMetaTab === 'season'}
+              aria-controls="panel-season"
               onClick={() => setActiveMetaTab('season')}
             >
               <span aria-hidden="true">🏆</span> Temporada
             </button>
             <button
+              id="tab-missions"
               className={`meta-tab ${activeMetaTab === 'missions' ? 'is-active' : ''}`}
               type="button"
               role="tab"
               aria-selected={activeMetaTab === 'missions'}
+              aria-controls="panel-missions"
               onClick={() => setActiveMetaTab('missions')}
             >
               <span aria-hidden="true">🎯</span> Club
             </button>
             <button
+              id="tab-collection"
               className={`meta-tab ${activeMetaTab === 'collection' ? 'is-active' : ''}`}
               type="button"
               role="tab"
               aria-selected={activeMetaTab === 'collection'}
+              aria-controls="panel-collection"
               onClick={() => setActiveMetaTab('collection')}
             >
-              <span aria-hidden="true">🏅</span> Coleccion
+              <span aria-hidden="true">🏅</span> Colección
             </button>
             <button
+              id="tab-shop"
               className={`meta-tab ${activeMetaTab === 'shop' ? 'is-active' : ''}`}
               type="button"
               role="tab"
               aria-selected={activeMetaTab === 'shop'}
+              aria-controls="panel-shop"
               onClick={() => setActiveMetaTab('shop')}
             >
               <span aria-hidden="true">🛍️</span> Tienda
@@ -179,7 +187,12 @@ export function Home() {
           </div>
 
           {activeMetaTab === 'season' ? (
-            <div className="meta-panel-grid">
+            <div
+              id="panel-season"
+              role="tabpanel"
+              aria-labelledby="tab-season"
+              className="meta-panel-grid"
+            >
               <SeasonPanel
                 season={seasonCard}
                 pendingChests={pendingChests}
@@ -193,19 +206,34 @@ export function Home() {
           ) : null}
 
           {activeMetaTab === 'missions' ? (
-            <div className="meta-panel-grid">
+            <div
+              id="panel-missions"
+              role="tabpanel"
+              aria-labelledby="tab-missions"
+              className="meta-panel-grid"
+            >
               <MissionPanel missions={missionCards} weeklyProgress={weeklyProgress} />
             </div>
           ) : null}
 
           {activeMetaTab === 'collection' ? (
-            <div className="meta-panel-grid">
+            <div
+              id="panel-collection"
+              role="tabpanel"
+              aria-labelledby="tab-collection"
+              className="meta-panel-grid"
+            >
               <CollectionPanel badges={badgeCards} />
             </div>
           ) : null}
 
           {activeMetaTab === 'shop' ? (
-            <div className="meta-panel-grid">
+            <div
+              id="panel-shop"
+              role="tabpanel"
+              aria-labelledby="tab-shop"
+              className="meta-panel-grid"
+            >
               <ThemeShopPanel
                 themes={themeCards}
                 availableStars={availableStars}

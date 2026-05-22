@@ -59,7 +59,7 @@ export function SeasonPanel({
             {season.currentMatch ? 'Jugar partido actual' : 'Empezar nueva temporada'}
           </button>
           <button className="btn-secondary btn-compact" type="button" onClick={onShowSeasonGuide}>
-            Como se gana la liga
+            Cómo se gana la liga
           </button>
         </div>
       </div>
@@ -99,7 +99,7 @@ export function SeasonPanel({
         </div>
 
         <div className="boss-box">
-          <strong>🏅 Titulos ganados: {season.titles}</strong>
+          <strong>🏅 Títulos ganados: {season.titles}</strong>
           <p>
             Tu objetivo principal es completar el calendario y levantar una copa
             para pasar a la siguiente temporada.
