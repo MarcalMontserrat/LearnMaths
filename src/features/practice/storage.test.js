@@ -20,7 +20,7 @@ describe('storage', () => {
 
   beforeEach(() => {
     localStorageMock = buildLocalStorageMock();
-    Object.defineProperty(globalThis, 'localStorage', {
+    Object.defineProperty(global, 'localStorage', {
       value: localStorageMock,
       writable: true
     });
