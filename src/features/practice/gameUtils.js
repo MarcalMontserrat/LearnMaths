@@ -1,5 +1,6 @@
 import { MODE_LABELS } from './config';
 import { buildNotebookDescription } from './notebookUtils';
+export { readStoredNumber } from './storage';
 
 const randomInt = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
@@ -191,17 +192,6 @@ export const getRoundMessage = (stars) => {
   }
 
   return 'Sigue entrenando';
-};
-
-export const readStoredNumber = (key) => {
-  if (typeof window === 'undefined') {
-    return 0;
-  }
-
-  const storedValue = window.localStorage.getItem(key);
-  const parsedValue = Number.parseInt(storedValue ?? '0', 10);
-
-  return Number.isNaN(parsedValue) ? 0 : parsedValue;
 };
 
 const padDigits = (digits, targetLength) => [

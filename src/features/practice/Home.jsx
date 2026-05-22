@@ -10,6 +10,7 @@ import { SeasonIntroModal } from './components/SeasonIntroModal';
 import { SkillProgressPanel } from './components/SkillProgressPanel';
 import { ThemeShopPanel } from './components/ThemeShopPanel';
 import { MODE_OPTIONS, STORAGE_KEYS } from './config';
+import { readStoredFlag, writeStoredFlag } from './storage';
 import { usePracticeSession } from './hooks/usePracticeSession';
 
 export function Home() {
@@ -55,13 +56,9 @@ export function Home() {
     handleSelectTheme
   } = usePracticeSession();
   const [activeMetaTab, setActiveMetaTab] = useState('season');
-  const [showSeasonGuide, setShowSeasonGuide] = useState(() => {
-    if (typeof window === 'undefined') {
-      return false;
-    }
-
-    return window.localStorage.getItem(STORAGE_KEYS.seasonGuideSeen) !== '1';
-  });
+  const [showSeasonGuide, setShowSeasonGuide] = useState(
+    () => readStoredFlag(STORAGE_KEYS.seasonGuideSeen) !== '1'
+  );
 
   useEffect(() => {
     document.title = 'Mision Matematica';
@@ -69,10 +66,7 @@ export function Home() {
 
   const selectedMode = MODE_OPTIONS.find((option) => option.id === mode);
   const handleCloseSeasonGuide = () => {
-    if (typeof window !== 'undefined') {
-      window.localStorage.setItem(STORAGE_KEYS.seasonGuideSeen, '1');
-    }
-
+    writeStoredFlag(STORAGE_KEYS.seasonGuideSeen, '1');
     setShowSeasonGuide(false);
   };
   const handlePlayCurrentMatch = () => {
