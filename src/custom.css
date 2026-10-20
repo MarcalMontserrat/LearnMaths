@@ -1767,14 +1767,11 @@ body::after {
 .clock-number {
   position: absolute;
   z-index: 2;
-  font-size: 1.3rem;
+  font-size: clamp(0.92rem, 3vw, 1.25rem);
   font-weight: 900;
+  line-height: 1;
+  transform: translate(-50%, -50%);
 }
-
-.clock-number-12 { top: 8%; left: 50%; transform: translateX(-50%); }
-.clock-number-3 { top: 50%; right: 9%; transform: translateY(-50%); }
-.clock-number-6 { bottom: 7%; left: 50%; transform: translateX(-50%); }
-.clock-number-9 { top: 50%; left: 9%; transform: translateY(-50%); }
 
 .clock-hand {
   position: absolute;

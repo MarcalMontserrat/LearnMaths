@@ -2,6 +2,17 @@ import React, { useState } from 'react';
 import { createClockQuestion, getClockHandAngles } from './clockUtils';
 
 const CLOCK_SESSION_LENGTH = 10;
+const CLOCK_FACE_NUMBERS = Array.from({ length: 12 }, (_, index) => index + 1);
+
+const getClockNumberStyle = (number) => {
+  const angle = ((number - 3) * Math.PI) / 6;
+  const radius = 39;
+
+  return {
+    left: `${50 + Math.cos(angle) * radius}%`,
+    top: `${50 + Math.sin(angle) * radius}%`
+  };
+};
 
 function AnalogClock({ hour, minutes }) {
   const angles = getClockHandAngles(hour, minutes);
@@ -12,8 +23,12 @@ function AnalogClock({ hour, minutes }) {
       role="img"
       aria-label={`Reloj analogico marcando ${hour} y ${minutes}`}
     >
-      {[12, 3, 6, 9].map((number) => (
-        <span key={number} className={`clock-number clock-number-${number}`}>
+      {CLOCK_FACE_NUMBERS.map((number) => (
+        <span
+          key={number}
+          className="clock-number"
+          style={getClockNumberStyle(number)}
+        >
           {number}
         </span>
       ))}
