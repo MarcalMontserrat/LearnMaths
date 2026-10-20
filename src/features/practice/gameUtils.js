@@ -69,6 +69,10 @@ const buildHint = (type, left, right) => {
     return 'Mira primero las unidades. Si arriba hay menos, pide prestada una decena.';
   }
 
+  if (type === 'div1') {
+    return `Busca cuantas veces cabe ${right} en cada parte de ${left}. La division es exacta: el resto final debe ser 0.`;
+  }
+
   if (type === 'mul2') {
     const tens = Math.floor(left / 10) * 10;
     const ones = left % 10;
@@ -76,7 +80,7 @@ const buildHint = (type, left, right) => {
     return `${left} x ${right} = (${tens} x ${right}) + (${ones} x ${right})`;
   }
 
-  if (type === 'mulLong') {
+  if (type === 'mulLong' || type === 'mul33') {
     return buildExpandedMultiplicationHint(left, right);
   }
 
@@ -88,12 +92,15 @@ const buildHint = (type, left, right) => {
 };
 
 const createQuestion = (type, left, right) => {
-  const operator = type === 'sum' ? '+' : type === 'sub' ? '-' : 'x';
+  const operator =
+    type === 'sum' ? '+' : type === 'sub' ? '-' : type === 'div1' ? '÷' : 'x';
   const answer =
     type === 'sum'
       ? left + right
       : type === 'sub'
         ? left - right
+        : type === 'div1'
+          ? left / right
         : left * right;
 
   return {
@@ -112,8 +119,8 @@ const createAdditionQuestion = () => {
   let right = 0;
 
   do {
-    left = randomInt(125, 999);
-    right = randomInt(126, 999);
+    left = randomInt(1200, 99999);
+    right = randomInt(1201, 99999);
   } while (!hasCarry(left, right));
 
   return createQuestion('sum', left, right);
@@ -124,8 +131,8 @@ const createSubtractionQuestion = () => {
   let right = 0;
 
   do {
-    left = randomInt(200, 999);
-    right = randomInt(101, left - 1);
+    left = randomInt(2000, 99999);
+    right = randomInt(1001, left - 1);
   } while (!hasBorrow(left, right));
 
   return createQuestion('sub', left, right);
@@ -145,10 +152,20 @@ const createLongMultiplicationQuestion = () => {
   return createQuestion('mulLong', left, right);
 };
 
+const createThreeByThreeMultiplicationQuestion = () =>
+  createQuestion('mul33', randomInt(100, 999), randomInt(100, 999));
+
+const createExactDivisionQuestion = () => {
+  const divisor = randomInt(2, 9);
+  const quotient = randomInt(101, 999);
+
+  return createQuestion('div1', divisor * quotient, divisor);
+};
+
 export const createQuestionForMode = (mode) => {
   const effectiveMode =
     mode === 'mix'
-      ? pickOne(['sum', 'sub', 'mul2', 'mul3'])
+      ? pickOne(['sum', 'sub', 'mul2', 'mul3', 'mulLong', 'mul33', 'div1'])
       : mode;
 
   if (effectiveMode === 'sum') {
@@ -165,6 +182,14 @@ export const createQuestionForMode = (mode) => {
 
   if (effectiveMode === 'mul3') {
     return createMultiplicationQuestion(3);
+  }
+
+  if (effectiveMode === 'mul33') {
+    return createThreeByThreeMultiplicationQuestion();
+  }
+
+  if (effectiveMode === 'div1') {
+    return createExactDivisionQuestion();
   }
 
   return createLongMultiplicationQuestion();
@@ -292,7 +317,29 @@ const createLongMultiplicationLayout = (question) => {
   };
 };
 
+const createDivisionLayout = (question) => ({
+  variant: 'division',
+  columnCount: String(question.answer).length,
+  title: 'Divide paso a paso',
+  description: buildNotebookDescription(question),
+  instructions:
+    'Empieza por la izquierda: divide, multiplica, resta y baja la cifra siguiente.',
+  helperInputMaxLength: String(question.left).length,
+  dividend: question.left,
+  divisor: question.right,
+  quotientSlots: Array.from(
+    { length: String(question.answer).length },
+    (_, index) => ({ id: `quotient-${index}` })
+  ),
+  stepRows: Array.from(
+    { length: String(question.answer).length },
+    (_, index) => ({ id: `division-step-${index}`, number: index + 1 })
+  )
+});
+
 export const createNotebookLayout = (question) =>
-  question.type === 'mulLong'
+  question.type === 'div1'
+    ? createDivisionLayout(question)
+    : question.type === 'mulLong' || question.type === 'mul33'
     ? createLongMultiplicationLayout(question)
     : createStandardNotebookLayout(question);

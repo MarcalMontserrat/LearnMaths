@@ -6,6 +6,7 @@ const MATCH_ICONS = {
   mul2: '✖️',
   mul3: '🧠',
   mulLong: '🚀',
+  div1: '➗',
   mix: '🏀'
 };
 

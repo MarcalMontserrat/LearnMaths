@@ -1,6 +1,24 @@
 import { createNotebookLayout, createQuestionForMode, getRoundMessage, getStarsForMistakes } from './gameUtils';
 
 describe('gameUtils', () => {
+  it('creates 3 digit by 3 digit multiplication questions', () => {
+    const question = createQuestionForMode('mul33');
+
+    expect(question.type).toBe('mul33');
+    expect(String(question.left)).toHaveLength(3);
+    expect(String(question.right)).toHaveLength(3);
+    expect(question.answer).toBe(question.left * question.right);
+  });
+
+  it('creates exact divisions with a one digit divisor', () => {
+    const question = createQuestionForMode('div1');
+
+    expect(question.type).toBe('div1');
+    expect(String(question.right)).toHaveLength(1);
+    expect(question.left % question.right).toBe(0);
+    expect(question.answer).toBe(question.left / question.right);
+  });
+
   it('creates long multiplication questions with at least 3 digits by 2 digits', () => {
     const question = createQuestionForMode('mulLong');
 
@@ -37,7 +55,7 @@ describe('gameUtils', () => {
   });
 
   describe('createQuestionForMode', () => {
-    it.each(['sum', 'sub', 'mul2', 'mul3', 'mulLong'])(
+    it.each(['sum', 'sub', 'mul2', 'mul3', 'mulLong', 'mul33', 'div1'])(
       'creates a valid question for mode %s',
       (mode) => {
         const question = createQuestionForMode(mode);
@@ -50,12 +68,20 @@ describe('gameUtils', () => {
 
     it('creates a question for mix mode using one of the core types', () => {
       const question = createQuestionForMode('mix');
-      expect(['sum', 'sub', 'mul2', 'mul3']).toContain(question.type);
+      expect(['sum', 'sub', 'mul2', 'mul3', 'mulLong', 'mul33', 'div1']).toContain(
+        question.type
+      );
     });
 
     it('sum answer equals left + right', () => {
       const question = createQuestionForMode('sum');
       expect(question.answer).toBe(question.left + question.right);
+    });
+
+    it('sum operands have at least 4 digits', () => {
+      const question = createQuestionForMode('sum');
+      expect(question.left).toBeGreaterThanOrEqual(1000);
+      expect(question.right).toBeGreaterThanOrEqual(1000);
     });
 
     it('sub answer equals left - right and is positive', () => {
@@ -118,6 +144,20 @@ describe('gameUtils', () => {
       const layout = createNotebookLayout({ type: 'sub', left: 456, right: 123, operator: '-', answer: 333 });
       expect(layout.variant).toBe('standard');
       expect(layout.helperMode).toBe('rewrite-top');
+    });
+
+    it('creates a division layout with quotient and scratch rows', () => {
+      const layout = createNotebookLayout({
+        type: 'div1',
+        left: 936,
+        right: 3,
+        operator: '÷',
+        answer: 312
+      });
+
+      expect(layout.variant).toBe('division');
+      expect(layout.quotientSlots).toHaveLength(3);
+      expect(layout.stepRows).toHaveLength(3);
     });
   });
 });

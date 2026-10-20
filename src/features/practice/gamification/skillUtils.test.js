@@ -61,7 +61,9 @@ describe('skillUtils', () => {
         sub: 0,
         mul2: 0,
         mul3: 0,
-        mulLong: 0
+        mulLong: 0,
+        mul33: 0,
+        div1: 0
       });
     });
   });
@@ -86,6 +88,20 @@ describe('skillUtils', () => {
       const next = addQuestionXp(snapshot, 'mulLong', 0);
 
       expect(next.mulLong).toBe(20);
+    });
+
+    it('gives long multiplication xp for mul33', () => {
+      const snapshot = createSkillXpSnapshot();
+      const next = addQuestionXp(snapshot, 'mul33', 0);
+
+      expect(next.mul33).toBe(20);
+    });
+
+    it('gives advanced xp for exact divisions', () => {
+      const snapshot = createSkillXpSnapshot();
+      const next = addQuestionXp(snapshot, 'div1', 0);
+
+      expect(next.div1).toBe(20);
     });
 
     it('accumulates xp across multiple calls', () => {

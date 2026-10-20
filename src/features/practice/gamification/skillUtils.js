@@ -13,7 +13,7 @@ export const createSkillXpSnapshot = () => createModeRecord(0);
 
 const getQuestionXp = (type, mistakes) => {
   const baseXp =
-    type === 'mulLong'
+    type === 'mulLong' || type === 'mul33' || type === 'div1'
       ? 20
       : type === 'mul3'
       ? 16

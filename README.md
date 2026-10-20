@@ -1,11 +1,12 @@
 # LearnMaths
 
-Aplicacion web pequena para practicar matematicas de primaria en el navegador, con una temporada de baloncesto como capa de progreso principal.
+Aplicacion web pequena para practicar matematicas de 4.º de primaria en el navegador, con una temporada de baloncesto como capa de progreso principal.
 
 ## Que incluye
 
 - Rondas de 10 ejercicios.
-- Modos de sumas, restas y multiplicaciones.
+- Modos de sumas y restas de hasta 5 cifras, multiplicaciones y divisiones exactas.
+- Seccion extra para aprender las horas en catalan con reloj, cuestionario y ayudas.
 - Sistema de estrellas por intento y celebracion rapida por jugada.
 - Temporadas con calendario de partidos, victorias y copas.
 - Misiones, insignias, cofres y tienda visual.

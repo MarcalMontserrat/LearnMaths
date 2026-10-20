@@ -15,6 +15,8 @@ describe('seasonUtils', () => {
       expect(getModeLabel('mul2')).toBeTruthy();
       expect(getModeLabel('mul3')).toBeTruthy();
       expect(getModeLabel('mulLong')).toBeTruthy();
+      expect(getModeLabel('mul33')).toBeTruthy();
+      expect(getModeLabel('div1')).toBeTruthy();
       expect(getModeLabel('mix')).toBeTruthy();
     });
 
@@ -39,8 +41,8 @@ describe('seasonUtils', () => {
   });
 
   describe('buildSeasonSchedule', () => {
-    it('returns 6 matches for season 1', () => {
-      expect(buildSeasonSchedule(1)).toHaveLength(6);
+    it('returns 7 matches for season 1', () => {
+      expect(buildSeasonSchedule(1)).toHaveLength(7);
     });
 
     it('increases goalStars in later seasons', () => {
@@ -77,7 +79,7 @@ describe('seasonUtils', () => {
     });
 
     it('returns null currentMatch when all matches are done', () => {
-      const meta = { ...createDefaultGameMeta('2026-01-01'), seasonGameIndex: 6 };
+      const meta = { ...createDefaultGameMeta('2026-01-01'), seasonGameIndex: 7 };
       const card = buildSeasonCard(meta);
       expect(card.currentMatch).toBeNull();
     });
@@ -86,7 +88,7 @@ describe('seasonUtils', () => {
   describe('buildSkillCards', () => {
     it('returns one card per core mode', () => {
       const cards = buildSkillCards(createDefaultGameMeta('2026-01-01'));
-      expect(cards).toHaveLength(5);
+      expect(cards).toHaveLength(7);
     });
 
     it('includes level and percentage', () => {

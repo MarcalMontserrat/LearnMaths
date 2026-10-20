@@ -11,10 +11,13 @@ export const createDailyChallenge = (dateKey) => {
   const seed = hashString(dateKey);
   const mode = CORE_MODES[seed % CORE_MODES.length];
   const goalStars =
-    mode === 'mulLong'
+    mode === 'mulLong' || mode === 'mul33' || mode === 'div1'
       ? [16, 18, 20][seed % 3]
       : [18, 20, 22, 24][seed % 4];
-  const rewardStars = mode === 'mulLong' ? 12 + (seed % 7) : 10 + (seed % 7);
+  const rewardStars =
+    mode === 'mulLong' || mode === 'mul33' || mode === 'div1'
+      ? 12 + (seed % 7)
+      : 10 + (seed % 7);
   const rewardChest = seed % 3 === 0 ? 1 : 0;
 
   return {

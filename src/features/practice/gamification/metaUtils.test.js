@@ -10,7 +10,9 @@ describe('metaUtils', () => {
         sub: 0,
         mul2: 0,
         mul3: 0,
-        mulLong: 0
+        mulLong: 0,
+        mul33: 0,
+        div1: 0
       });
     });
 

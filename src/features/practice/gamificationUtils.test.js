@@ -39,8 +39,8 @@ describe('gamificationUtils season flow', () => {
   it('starts a new season after winning the final match', () => {
     const meta = {
       ...createDefaultGameMeta('2026-04-19'),
-      seasonGameIndex: 5,
-      seasonWins: 5
+      seasonGameIndex: 6,
+      seasonWins: 6
     };
 
     const result = applyRoundProgress(
@@ -69,7 +69,7 @@ describe('gamificationUtils season flow', () => {
 
     expect(seasonCard.number).toBe(1);
     expect(seasonCard.titles).toBe(1);
-    expect(seasonCard.progressPercentage).toBeCloseTo(33.333, 1);
+    expect(seasonCard.progressPercentage).toBeCloseTo(28.571, 1);
     expect(seasonCard.currentMatch.title).toBe('Jornada 3');
     expect(seasonCard.schedule[0].status).toBe('won');
     expect(seasonCard.schedule[2].status).toBe('current');

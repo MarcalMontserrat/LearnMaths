@@ -1590,6 +1590,282 @@ body::after {
   }
 }
 
+.learning-section-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  padding: 10px;
+  border: 1px solid rgba(126, 72, 39, 0.14);
+  border-radius: 22px;
+  background: rgba(255, 252, 246, 0.78);
+}
+
+.learning-section-tabs button {
+  flex: 1 1 250px;
+  padding: 14px 18px;
+  border: 1px solid transparent;
+  border-radius: 16px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 850;
+  cursor: pointer;
+}
+
+.learning-section-tabs button.is-active {
+  border-color: rgba(203, 106, 24, 0.25);
+  background: rgba(203, 106, 24, 0.12);
+  box-shadow: 0 10px 24px rgba(111, 52, 20, 0.08);
+}
+
+.division-board {
+  display: grid;
+  gap: 18px;
+  min-width: min(100%, 520px);
+}
+
+.division-operation {
+  display: grid;
+  grid-template-columns: 1fr 3px auto;
+  gap: 18px;
+  align-items: center;
+  padding: 18px 22px;
+  border-radius: 18px;
+  background: rgba(255, 255, 255, 0.82);
+  font-size: clamp(1.8rem, 5vw, 2.8rem);
+  text-align: center;
+}
+
+.division-bracket {
+  width: 3px;
+  height: 58px;
+  background: var(--ink);
+  box-shadow: 18px -18px 0 -15px var(--ink);
+}
+
+.division-quotient-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  align-items: center;
+  font-weight: 850;
+}
+
+.division-quotient-inputs {
+  display: grid;
+  grid-template-columns: repeat(var(--division-columns), 56px);
+  gap: 8px;
+}
+
+.division-steps {
+  display: grid;
+  gap: 10px;
+}
+
+.division-step-row {
+  display: grid;
+  grid-template-columns: 72px repeat(2, minmax(110px, 1fr));
+  gap: 10px;
+  align-items: end;
+  padding: 12px;
+  border-radius: 16px;
+  background: rgba(15, 139, 141, 0.06);
+}
+
+.division-step-row label {
+  display: grid;
+  gap: 6px;
+  color: rgba(23, 50, 77, 0.74);
+  font-size: 0.82rem;
+  font-weight: 800;
+}
+
+.division-reminder {
+  margin: 0;
+  color: rgba(23, 50, 77, 0.72);
+  font-weight: 850;
+  text-align: center;
+}
+
+.clock-practice {
+  display: grid;
+  gap: 22px;
+  padding: 30px;
+  border: 1px solid rgba(126, 72, 39, 0.16);
+  border-radius: 28px;
+  background: linear-gradient(160deg, rgba(255, 252, 246, 0.98), rgba(238, 246, 255, 0.94));
+  box-shadow: 0 24px 54px rgba(75, 48, 30, 0.11);
+}
+
+.clock-practice-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  align-items: center;
+}
+
+.clock-practice-header h2,
+.clock-practice-header p,
+.clock-question-card h3,
+.clock-help-card h3 {
+  margin: 6px 0 0;
+}
+
+.clock-practice-grid {
+  display: grid;
+  grid-template-columns: minmax(280px, 0.8fr) minmax(340px, 1.2fr);
+  gap: 22px;
+}
+
+.clock-board,
+.clock-question-card,
+.clock-help-card,
+.clock-summary {
+  display: grid;
+  align-content: start;
+  gap: 18px;
+  padding: 24px;
+  border: 1px solid rgba(23, 50, 77, 0.1);
+  border-radius: 24px;
+  background: rgba(255, 255, 255, 0.82);
+}
+
+.clock-help-card {
+  grid-column: 1 / -1;
+}
+
+.clock-help-card ul {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 10px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.clock-help-card li {
+  padding: 12px;
+  border-radius: 14px;
+  background: rgba(58, 134, 255, 0.08);
+  line-height: 1.45;
+}
+
+.analog-clock {
+  position: relative;
+  width: min(100%, 300px);
+  aspect-ratio: 1;
+  margin: 0 auto;
+  border: 12px solid #f4972f;
+  border-radius: 50%;
+  background:
+    radial-gradient(circle at center, rgba(255, 255, 255, 0.98) 0 67%, transparent 68%),
+    repeating-conic-gradient(from -1deg, rgba(23, 50, 77, 0.52) 0 2deg, transparent 2deg 30deg),
+    #fffaf1;
+  box-shadow: inset 0 0 0 5px rgba(126, 72, 39, 0.1), 0 16px 30px rgba(75, 48, 30, 0.12);
+}
+
+.clock-number {
+  position: absolute;
+  z-index: 2;
+  font-size: 1.3rem;
+  font-weight: 900;
+}
+
+.clock-number-12 { top: 8%; left: 50%; transform: translateX(-50%); }
+.clock-number-3 { top: 50%; right: 9%; transform: translateY(-50%); }
+.clock-number-6 { bottom: 7%; left: 50%; transform: translateX(-50%); }
+.clock-number-9 { top: 50%; left: 9%; transform: translateY(-50%); }
+
+.clock-hand {
+  position: absolute;
+  z-index: 3;
+  bottom: 50%;
+  left: 50%;
+  border-radius: 999px;
+  background: var(--ink);
+  transform: translateX(-50%) rotate(var(--clock-angle));
+  transform-origin: 50% 100%;
+}
+
+.clock-hour-hand {
+  width: 8px;
+  height: 28%;
+}
+
+.clock-minute-hand {
+  width: 5px;
+  height: 38%;
+  background: #d86a0b;
+}
+
+.clock-pin {
+  position: absolute;
+  z-index: 4;
+  top: 50%;
+  left: 50%;
+  width: 18px;
+  height: 18px;
+  border: 4px solid white;
+  border-radius: 50%;
+  background: var(--ink);
+  transform: translate(-50%, -50%);
+}
+
+.clock-digital-help {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 14px 18px;
+  border-radius: 16px;
+  background: rgba(58, 134, 255, 0.1);
+}
+
+.clock-digital-help strong {
+  font-size: 1.5rem;
+  letter-spacing: 0.08em;
+}
+
+.clock-options {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.clock-option {
+  min-height: 78px;
+  padding: 14px;
+  border: 2px solid rgba(23, 50, 77, 0.12);
+  border-radius: 16px;
+  background: white;
+  color: var(--ink);
+  font: inherit;
+  font-weight: 800;
+  line-height: 1.4;
+  cursor: pointer;
+}
+
+.clock-option:hover:not(:disabled),
+.clock-option:focus-visible {
+  border-color: #3a86ff;
+  transform: translateY(-2px);
+}
+
+.clock-option.is-correct {
+  border-color: #2aa876;
+  background: rgba(42, 168, 118, 0.12);
+}
+
+.clock-option.is-wrong {
+  border-color: #d94f4f;
+  background: rgba(217, 79, 79, 0.1);
+}
+
+.clock-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+
 @media (max-width: 1080px) {
   .mode-grid {
     grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -1620,6 +1896,18 @@ body::after {
 
   .season-guide-steps {
     grid-template-columns: 1fr;
+  }
+
+  .clock-practice-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .clock-help-card {
+    grid-column: auto;
+  }
+
+  .clock-help-card ul {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 }
 
@@ -1663,6 +1951,30 @@ body::after {
   .mode-card {
     min-height: auto;
     padding: 18px 18px 18px 22px;
+  }
+
+  .clock-practice {
+    padding: 18px;
+  }
+
+  .clock-practice-header,
+  .division-step-row {
+    grid-template-columns: 1fr;
+  }
+
+  .clock-practice-header {
+    display: grid;
+  }
+
+  .clock-options,
+  .clock-help-card ul {
+    grid-template-columns: 1fr;
+  }
+
+  .clock-board,
+  .clock-question-card,
+  .clock-help-card {
+    padding: 18px;
   }
 
   .meta-tabs {

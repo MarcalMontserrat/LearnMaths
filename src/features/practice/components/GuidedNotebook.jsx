@@ -44,6 +44,9 @@ export function GuidedNotebook({ question, isSolved, inputRef, onAnswerChange })
   const [resultNotes, setResultNotes] = useState(() =>
     createEmptyRow(layout.columnCount)
   );
+  const [divisionNotes, setDivisionNotes] = useState(() =>
+    createEmptyMatrix(layout.stepRows?.length ?? 0, 2)
+  );
 
   const updateHelperNote = (rowIndex, columnIndex, nextValue) => {
     setHelperNotes((currentNotes) =>
@@ -95,12 +98,30 @@ export function GuidedNotebook({ question, isSolved, inputRef, onAnswerChange })
     );
   };
 
+  const updateDivisionNote = (rowIndex, columnIndex, nextValue) => {
+    setDivisionNotes((currentNotes) =>
+      currentNotes.map((row, currentRowIndex) =>
+        currentRowIndex === rowIndex
+          ? row.map((note, noteIndex) =>
+              noteIndex === columnIndex
+                ? sanitizeNotebookValue(nextValue, layout.helperInputMaxLength)
+                : note
+            )
+          : row
+      )
+    );
+  };
+
   return (
     <section className="notebook-panel">
       <div className="notebook-header">
         <div className="notebook-copy">
           <span className="section-kicker">
-            {layout.variant === 'long-multiplication' ? 'Pizarra larga' : 'Pizarra en columnas'}
+            {layout.variant === 'long-multiplication'
+              ? 'Pizarra larga'
+              : layout.variant === 'division'
+                ? 'Pizarra de division'
+                : 'Pizarra en columnas'}
           </span>
           <h3>{layout.title}</h3>
           <p className="notebook-note">{layout.description}</p>
@@ -112,7 +133,76 @@ export function GuidedNotebook({ question, isSolved, inputRef, onAnswerChange })
         className="notebook-grid"
         style={{ '--notebook-columns': layout.columnCount }}
       >
-        {layout.variant === 'long-multiplication' ? (
+        {layout.variant === 'division' ? (
+          <div className="division-board">
+            <div className="division-operation" aria-label={`${layout.dividend} dividido entre ${layout.divisor}`}>
+              <strong>{layout.dividend}</strong>
+              <span className="division-bracket" aria-hidden="true" />
+              <strong>{layout.divisor}</strong>
+            </div>
+
+            <div className="division-quotient-row">
+              <span>Resultado</span>
+              <div
+                className="division-quotient-inputs"
+                style={{ '--division-columns': layout.quotientSlots.length }}
+              >
+                {layout.quotientSlots.map((slot, index) => (
+                  <input
+                    key={slot.id}
+                    ref={index === layout.quotientSlots.length - 1 ? inputRef : null}
+                    className="notebook-input notebook-result-input"
+                    inputMode="numeric"
+                    pattern="[0-9]*"
+                    autoComplete="off"
+                    maxLength={1}
+                    value={resultNotes[index]}
+                    onChange={(event) => updateResultNote(index, event.target.value)}
+                    aria-label={`Cifra ${index + 1} del cociente`}
+                    disabled={isSolved}
+                  />
+                ))}
+              </div>
+            </div>
+
+            <div className="division-steps">
+              {layout.stepRows.map((step, rowIndex) => (
+                <div className="division-step-row" key={step.id}>
+                  <strong>Paso {step.number}</strong>
+                  <label>
+                    Producto
+                    <input
+                      className="notebook-input notebook-input-wide"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      autoComplete="off"
+                      value={divisionNotes[rowIndex][0]}
+                      onChange={(event) =>
+                        updateDivisionNote(rowIndex, 0, event.target.value)
+                      }
+                      disabled={isSolved}
+                    />
+                  </label>
+                  <label>
+                    Resto parcial
+                    <input
+                      className="notebook-input notebook-input-wide"
+                      inputMode="numeric"
+                      pattern="[0-9]*"
+                      autoComplete="off"
+                      value={divisionNotes[rowIndex][1]}
+                      onChange={(event) =>
+                        updateDivisionNote(rowIndex, 1, event.target.value)
+                      }
+                      disabled={isSolved}
+                    />
+                  </label>
+                </div>
+              ))}
+            </div>
+            <p className="division-reminder">Divide · multiplica · resta · baja</p>
+          </div>
+        ) : layout.variant === 'long-multiplication' ? (
           <>
             <div className="notebook-row">
               <span className="notebook-row-label" aria-hidden="true" />

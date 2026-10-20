@@ -1,4 +1,12 @@
-export const CORE_MODES = ['sum', 'sub', 'mul2', 'mul3', 'mulLong'];
+export const CORE_MODES = [
+  'sum',
+  'sub',
+  'mul2',
+  'mul3',
+  'mulLong',
+  'mul33',
+  'div1'
+];
 export const DEFAULT_THEME_ID = 'sunrise';
 
 export const THEME_OPTIONS = [
@@ -86,11 +94,20 @@ export const SEASON_MATCHES = [
   },
   {
     id: 'semi-long',
-    title: 'Semifinal',
+    title: 'Jornada 5',
     subtitle: 'Multiplicacion larga bajo presion',
     mode: 'mulLong',
     goalStars: 16,
     rewardStars: 8,
+    rewardChest: 1
+  },
+  {
+    id: 'semi-division',
+    title: 'Semifinal',
+    subtitle: 'Division exacta para llegar a la final',
+    mode: 'div1',
+    goalStars: 17,
+    rewardStars: 9,
     rewardChest: 1
   },
   {

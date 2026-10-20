@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { CatalanClockPractice } from '../clock/CatalanClockPractice';
 import { CoachPanel } from './components/CoachPanel';
 import { CollectionPanel } from './components/CollectionPanel';
 import { HeroSection } from './components/HeroSection';
@@ -56,6 +57,7 @@ export function Home() {
     handleSelectTheme
   } = usePracticeSession();
   const [activeMetaTab, setActiveMetaTab] = useState('season');
+  const [activeSection, setActiveSection] = useState('maths');
   const [showSeasonGuide, setShowSeasonGuide] = useState(
     () => readStoredFlag(STORAGE_KEYS.seasonGuideSeen) !== '1'
   );
@@ -73,13 +75,14 @@ export function Home() {
     const targetMode = seasonCard.currentMatch?.mode ?? mode;
 
     handleCloseSeasonGuide();
+    setActiveSection('maths');
     setActiveMetaTab('season');
     startRound(targetMode);
   };
 
   return (
     <div className={`math-page basketball-page theme-${activeTheme}`}>
-      {showSeasonGuide ? (
+      {showSeasonGuide && activeSection === 'maths' ? (
         <SeasonIntroModal
           season={seasonCard}
           onClose={handleCloseSeasonGuide}
@@ -98,9 +101,35 @@ export function Home() {
         seasonCard={seasonCard}
       />
 
-      <ModeGrid activeMode={mode} onModeChange={handleModeChange} />
+      <nav className="learning-section-tabs" aria-label="Secciones de aprendizaje">
+        <button
+          className={activeSection === 'maths' ? 'is-active' : ''}
+          type="button"
+          aria-pressed={activeSection === 'maths'}
+          onClick={() => setActiveSection('maths')}
+        >
+          🧮 Matemáticas de 4.º
+        </button>
+        <button
+          className={activeSection === 'clock' ? 'is-active' : ''}
+          type="button"
+          aria-pressed={activeSection === 'clock'}
+          onClick={() => {
+            setActiveSection('clock');
+            setShowSeasonGuide(false);
+          }}
+        >
+          🕒 Extra: hores en català
+        </button>
+      </nav>
 
-      <section className="practice-grid">
+      {activeSection === 'clock' ? (
+        <CatalanClockPractice />
+      ) : (
+        <>
+          <ModeGrid activeMode={mode} onModeChange={handleModeChange} />
+
+          <section className="practice-grid">
         <PracticePanel
           roundComplete={roundComplete}
           completedCount={completedCount}
@@ -135,9 +164,9 @@ export function Home() {
           seasonCard={seasonCard}
           latestRewardMessage={latestRewardMessage}
         />
-      </section>
+          </section>
 
-      <section className="meta-grid">
+          <section className="meta-grid">
         <div className="meta-hub">
           <div className="meta-tabs" role="tablist" aria-label="Paneles de juego">
             <button
@@ -243,7 +272,9 @@ export function Home() {
             </div>
           ) : null}
         </div>
-      </section>
+          </section>
+        </>
+      )}
     </div>
   );
 }
