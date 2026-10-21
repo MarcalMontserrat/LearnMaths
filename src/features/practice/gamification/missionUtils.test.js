@@ -21,7 +21,7 @@ describe('missionUtils', () => {
 
     it('returns a valid mode', () => {
       const challenge = createDailyChallenge('2026-04-15');
-      expect(['sum', 'sub', 'mul2', 'mul3', 'mulLong', 'mul33', 'div1']).toContain(
+      expect(['sum', 'sub', 'mul2', 'mul3', 'mulLong', 'mul33', 'div1', 'problems']).toContain(
         challenge.mode
       );
     });

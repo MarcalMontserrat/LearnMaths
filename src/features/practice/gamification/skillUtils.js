@@ -15,11 +15,13 @@ const getQuestionXp = (type, mistakes) => {
   const baseXp =
     type === 'mulLong' || type === 'mul33' || type === 'div1'
       ? 20
-      : type === 'mul3'
-      ? 16
-      : type === 'mul2'
-        ? 14
-        : 12;
+      : type === 'problems'
+        ? 18
+        : type === 'mul3'
+          ? 16
+          : type === 'mul2'
+            ? 14
+            : 12;
 
   return Math.max(8, baseXp - mistakes * 2);
 };

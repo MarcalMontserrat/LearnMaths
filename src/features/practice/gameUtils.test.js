@@ -55,7 +55,7 @@ describe('gameUtils', () => {
   });
 
   describe('createQuestionForMode', () => {
-    it.each(['sum', 'sub', 'mul2', 'mul3', 'mulLong', 'mul33', 'div1'])(
+    it.each(['sum', 'sub', 'mul2', 'mul3', 'mulLong', 'mul33', 'div1', 'problems'])(
       'creates a valid question for mode %s',
       (mode) => {
         const question = createQuestionForMode(mode);
@@ -68,9 +68,17 @@ describe('gameUtils', () => {
 
     it('creates a question for mix mode using one of the core types', () => {
       const question = createQuestionForMode('mix');
-      expect(['sum', 'sub', 'mul2', 'mul3', 'mulLong', 'mul33', 'div1']).toContain(
+      expect(['sum', 'sub', 'mul2', 'mul3', 'mulLong', 'mul33', 'div1', 'problems']).toContain(
         question.type
       );
+    });
+
+    it('uses a curated written problem with an integer answer', () => {
+      const question = createQuestionForMode('problems');
+
+      expect(question.prompt).toBeTruthy();
+      expect(Number.isInteger(question.answer)).toBe(true);
+      expect(question.label).toBe('Problema de 4.º');
     });
 
     it('sum answer equals left + right', () => {

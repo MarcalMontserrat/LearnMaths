@@ -1,4 +1,3 @@
-import { STORAGE_KEYS } from '../config';
 import { CORE_MODES, DEFAULT_THEME_ID, THEME_OPTIONS, SEASON_MATCHES, createModeRecord } from './constants';
 import { getTodayKey } from './dateUtils';
 import { createDailyChallenge } from './missionUtils';
@@ -78,31 +77,6 @@ export const normalizeGameMeta = (rawMeta, dateKey = getTodayKey()) => {
       completed: dailyChallengeHistory.includes(dateKey)
     }
   };
-};
-
-export const readStoredGameMeta = (dateKey = getTodayKey()) => {
-  if (typeof window === 'undefined') {
-    return createDefaultGameMeta(dateKey);
-  }
-
-  try {
-    const rawValue = window.localStorage.getItem(STORAGE_KEYS.gameMeta);
-
-    return normalizeGameMeta(
-      rawValue ? JSON.parse(rawValue) : createDefaultGameMeta(dateKey),
-      dateKey
-    );
-  } catch {
-    return createDefaultGameMeta(dateKey);
-  }
-};
-
-export const writeStoredGameMeta = (meta) => {
-  if (typeof window === 'undefined') {
-    return;
-  }
-
-  window.localStorage.setItem(STORAGE_KEYS.gameMeta, JSON.stringify(meta));
 };
 
 const addPlayedDate = (playedDates, dateKey) => {

@@ -63,7 +63,8 @@ describe('skillUtils', () => {
         mul3: 0,
         mulLong: 0,
         mul33: 0,
-        div1: 0
+        div1: 0,
+        problems: 0
       });
     });
   });
@@ -102,6 +103,13 @@ describe('skillUtils', () => {
       const next = addQuestionXp(snapshot, 'div1', 0);
 
       expect(next.div1).toBe(20);
+    });
+
+    it('gives problem-solving xp for written problems', () => {
+      const snapshot = createSkillXpSnapshot();
+      const next = addQuestionXp(snapshot, 'problems', 0);
+
+      expect(next.problems).toBe(18);
     });
 
     it('accumulates xp across multiple calls', () => {

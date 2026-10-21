@@ -5,7 +5,8 @@ export const CORE_MODES = [
   'mul3',
   'mulLong',
   'mul33',
-  'div1'
+  'div1',
+  'problems'
 ];
 export const DEFAULT_THEME_ID = 'sunrise';
 

@@ -1,5 +1,9 @@
 import React, { useState } from 'react';
-import { createClockQuestion, getClockHandAngles } from './clockUtils';
+import {
+  CLOCK_LEVELS,
+  createClockSession,
+  getClockHandAngles
+} from './clockUtils';
 
 const CLOCK_SESSION_LENGTH = 10;
 const CLOCK_FACE_NUMBERS = Array.from({ length: 12 }, (_, index) => index + 1);
@@ -45,8 +49,11 @@ function AnalogClock({ hour, minutes }) {
   );
 }
 
-export function CatalanClockPractice() {
-  const [question, setQuestion] = useState(() => createClockQuestion());
+export function CatalanClockPractice({ initialLevel = 'quarters' }) {
+  const [level, setLevel] = useState(initialLevel);
+  const [questions, setQuestions] = useState(() =>
+    createClockSession(initialLevel, CLOCK_SESSION_LENGTH)
+  );
   const [questionIndex, setQuestionIndex] = useState(0);
   const [firstTryAnswers, setFirstTryAnswers] = useState(0);
   const [attempts, setAttempts] = useState(0);
@@ -56,9 +63,9 @@ export function CatalanClockPractice() {
   const [showHelp, setShowHelp] = useState(false);
   const [feedback, setFeedback] = useState(null);
   const [isComplete, setIsComplete] = useState(false);
+  const question = questions[questionIndex];
 
-  const resetQuestion = () => {
-    setQuestion(createClockQuestion());
+  const resetQuestionState = () => {
     setAttempts(0);
     setSelectedOption(null);
     setIsSolved(false);
@@ -67,12 +74,16 @@ export function CatalanClockPractice() {
     setFeedback(null);
   };
 
-  const restart = () => {
+  const startSession = (nextLevel) => {
+    setLevel(nextLevel);
+    setQuestions(createClockSession(nextLevel, CLOCK_SESSION_LENGTH));
     setQuestionIndex(0);
     setFirstTryAnswers(0);
     setIsComplete(false);
-    resetQuestion();
+    resetQuestionState();
   };
+
+  const restart = () => startSession(level);
 
   const handleOptionClick = (option) => {
     if (isSolved) {
@@ -93,7 +104,7 @@ export function CatalanClockPractice() {
     setAttempts((current) => current + 1);
     setFeedback({
       type: 'error',
-      message: 'Encara no. Mira quants quarts han passat i pensa en l’hora següent.'
+      message: 'Encara no. Mira bé les dues agulles i prova de nou.'
     });
   };
 
@@ -104,7 +115,7 @@ export function CatalanClockPractice() {
     }
 
     setQuestionIndex((current) => current + 1);
-    resetQuestion();
+    resetQuestionState();
   };
 
   return (
@@ -118,6 +129,21 @@ export function CatalanClockPractice() {
         <div className="score-pill">
           🕒 {Math.min(questionIndex + (isSolved ? 1 : 0), CLOCK_SESSION_LENGTH)}/{CLOCK_SESSION_LENGTH}
         </div>
+      </div>
+
+      <div className="clock-level-picker" aria-label="Nivell de dificultat">
+        {CLOCK_LEVELS.map((option) => (
+          <button
+            key={option.id}
+            className={level === option.id ? 'is-active' : ''}
+            type="button"
+            aria-pressed={level === option.id}
+            onClick={() => startSession(option.id)}
+          >
+            <strong>{option.title}</strong>
+            <span>{option.description}</span>
+          </button>
+        ))}
       </div>
 
       <div className="progress-track" aria-hidden="true">
@@ -220,6 +246,9 @@ export function CatalanClockPractice() {
               <li><strong>:15</strong> · un quart de l’hora següent</li>
               <li><strong>:30</strong> · dos quarts de l’hora següent</li>
               <li><strong>:45</strong> · tres quarts de l’hora següent</li>
+              {level === 'five-minutes' || level === 'mixed' ? (
+                <li><strong>±5</strong> · cinc minuts abans o després del quart</li>
+              ) : null}
             </ul>
           </aside>
         </div>

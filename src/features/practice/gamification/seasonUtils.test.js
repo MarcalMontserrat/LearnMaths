@@ -17,6 +17,7 @@ describe('seasonUtils', () => {
       expect(getModeLabel('mulLong')).toBeTruthy();
       expect(getModeLabel('mul33')).toBeTruthy();
       expect(getModeLabel('div1')).toBeTruthy();
+      expect(getModeLabel('problems')).toBeTruthy();
       expect(getModeLabel('mix')).toBeTruthy();
     });
 
@@ -88,7 +89,7 @@ describe('seasonUtils', () => {
   describe('buildSkillCards', () => {
     it('returns one card per core mode', () => {
       const cards = buildSkillCards(createDefaultGameMeta('2026-01-01'));
-      expect(cards).toHaveLength(7);
+      expect(cards).toHaveLength(8);
     });
 
     it('includes level and percentage', () => {

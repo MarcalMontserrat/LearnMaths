@@ -43,7 +43,5 @@ export {
 export {
   createDefaultGameMeta,
   normalizeGameMeta,
-  readStoredGameMeta,
-  writeStoredGameMeta,
   applyRoundProgress
 } from './gamification/metaUtils';

@@ -1,5 +1,4 @@
-import { useCallback, useEffect, useState } from 'react';
-import { STORAGE_KEYS } from '../config';
+import { useCallback, useState } from 'react';
 import {
   THEME_OPTIONS,
   applyRoundProgress,
@@ -8,33 +7,23 @@ import {
   buildSeasonCard,
   buildSkillCards,
   buyTheme,
+  createDefaultGameMeta,
   getAvailableStars,
   getTodayKey,
   getWeeklyProgress,
   openChestReward,
-  readStoredGameMeta,
-  selectTheme,
-  writeStoredGameMeta
+  selectTheme
 } from '../gamificationUtils';
-import { readStoredNumber, writeStoredNumber } from '../storage';
 
 export function useGameMeta() {
-  const [meta, setMeta] = useState(() => readStoredGameMeta());
+  const [meta, setMeta] = useState(() => createDefaultGameMeta());
   const [totalStars, setTotalStars] = useState(0);
   const [bestStreak, setBestStreak] = useState(0);
   const [latestRewardMessage, setLatestRewardMessage] = useState('');
 
-  useEffect(() => {
-    setBestStreak(readStoredNumber(STORAGE_KEYS.bestStreak));
-    setTotalStars(readStoredNumber(STORAGE_KEYS.totalStars));
-    setMeta(readStoredGameMeta(getTodayKey()));
-  }, []);
-
   const updateScores = useCallback((nextTotalStars, nextBestStreak) => {
     setTotalStars(nextTotalStars);
     setBestStreak(nextBestStreak);
-    writeStoredNumber(STORAGE_KEYS.totalStars, nextTotalStars);
-    writeStoredNumber(STORAGE_KEYS.bestStreak, nextBestStreak);
   }, []);
 
   const applyRoundEnd = useCallback(
@@ -50,10 +39,6 @@ export function useGameMeta() {
           roundProgress.rewards[roundProgress.rewards.length - 1]
         );
       }
-      writeStoredNumber(STORAGE_KEYS.totalStars, nextTotalStars);
-      writeStoredNumber(STORAGE_KEYS.bestStreak, nextBestStreak);
-      writeStoredGameMeta(roundProgress.nextMeta);
-
       return roundProgress;
     },
     [meta]
@@ -71,8 +56,6 @@ export function useGameMeta() {
     setMeta(chestResult.nextMeta);
     setTotalStars(nextTotalStars);
     setLatestRewardMessage(chestResult.rewardLabel);
-    writeStoredNumber(STORAGE_KEYS.totalStars, nextTotalStars);
-    writeStoredGameMeta(chestResult.nextMeta);
   }, [meta, totalStars]);
 
   const handleBuyTheme = useCallback(
@@ -88,7 +71,6 @@ export function useGameMeta() {
 
       setMeta(purchaseResult.nextMeta);
       setLatestRewardMessage(`Tema desbloqueado: ${themeName}.`);
-      writeStoredGameMeta(purchaseResult.nextMeta);
     },
     [meta, totalStars]
   );
@@ -98,7 +80,6 @@ export function useGameMeta() {
       const nextMeta = selectTheme(meta, themeId);
 
       setMeta(nextMeta);
-      writeStoredGameMeta(nextMeta);
     },
     [meta]
   );

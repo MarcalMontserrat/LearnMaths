@@ -1,12 +1,5 @@
 export const SESSION_LENGTH = 10;
 
-export const STORAGE_KEYS = {
-  bestStreak: 'learnmaths.bestPerfectStreak',
-  totalStars: 'learnmaths.totalStars',
-  gameMeta: 'learnmaths.gameMeta',
-  seasonGuideSeen: 'learnmaths.seasonGuideSeen'
-};
-
 export const MODE_OPTIONS = [
   {
     id: 'mix',
@@ -55,6 +48,12 @@ export const MODE_OPTIONS = [
     title: 'Divisiones exactas',
     description: 'Dividendos de 3 o 4 cifras entre una cifra, sin resto.',
     accent: '#3a86ff'
+  },
+  {
+    id: 'problems',
+    title: 'Problemas escritos',
+    description: 'Situaciones de dinero, tiempo, distancias y repartos.',
+    accent: '#8a4fff'
   }
 ];
 
@@ -65,7 +64,8 @@ export const MODE_LABELS = {
   mul3: 'Multiplicacion de 3 cifras',
   mulLong: 'Multiplicacion larga',
   mul33: 'Multiplicacion de 3 cifras x 3 cifras',
-  div1: 'Division exacta entre una cifra'
+  div1: 'Division exacta entre una cifra',
+  problems: 'Problema de 4.º'
 };
 
 export const SUCCESS_MESSAGES = [

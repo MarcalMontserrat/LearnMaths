@@ -12,7 +12,8 @@ describe('metaUtils', () => {
         mul3: 0,
         mulLong: 0,
         mul33: 0,
-        div1: 0
+        div1: 0,
+        problems: 0
       });
     });
 

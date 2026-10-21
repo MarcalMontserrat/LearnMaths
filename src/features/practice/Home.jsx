@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
+import { CLOCK_LEVELS } from '../clock/clockUtils';
 import { CatalanClockPractice } from '../clock/CatalanClockPractice';
 import { CoachPanel } from './components/CoachPanel';
 import { CollectionPanel } from './components/CollectionPanel';
@@ -6,13 +7,14 @@ import { HeroSection } from './components/HeroSection';
 import { MissionPanel } from './components/MissionPanel';
 import { ModeGrid } from './components/ModeGrid';
 import { PracticePanel } from './components/PracticePanel';
+import { RecommendedTraining } from './components/RecommendedTraining';
 import { SeasonPanel } from './components/SeasonPanel';
 import { SeasonIntroModal } from './components/SeasonIntroModal';
 import { SkillProgressPanel } from './components/SkillProgressPanel';
 import { ThemeShopPanel } from './components/ThemeShopPanel';
-import { MODE_OPTIONS, STORAGE_KEYS } from './config';
-import { readStoredFlag, writeStoredFlag } from './storage';
+import { MODE_OPTIONS } from './config';
 import { usePracticeSession } from './hooks/usePracticeSession';
+import { getDailyRecommendation } from './recommendationUtils';
 
 export function Home() {
   const {
@@ -58,17 +60,22 @@ export function Home() {
   } = usePracticeSession();
   const [activeMetaTab, setActiveMetaTab] = useState('season');
   const [activeSection, setActiveSection] = useState('maths');
-  const [showSeasonGuide, setShowSeasonGuide] = useState(
-    () => readStoredFlag(STORAGE_KEYS.seasonGuideSeen) !== '1'
-  );
+  const [recommendedRouteActive, setRecommendedRouteActive] = useState(false);
+  const [showSeasonGuide, setShowSeasonGuide] = useState(true);
 
   useEffect(() => {
     document.title = 'Misión Matemática';
   }, []);
 
   const selectedMode = MODE_OPTIONS.find((option) => option.id === mode);
+  const dailyRecommendation = useMemo(() => getDailyRecommendation(), []);
+  const recommendedMathMode = MODE_OPTIONS.find(
+    (option) => option.id === dailyRecommendation.mathMode
+  );
+  const recommendedClockLevel = CLOCK_LEVELS.find(
+    (option) => option.id === dailyRecommendation.clockLevel
+  );
   const handleCloseSeasonGuide = () => {
-    writeStoredFlag(STORAGE_KEYS.seasonGuideSeen, '1');
     setShowSeasonGuide(false);
   };
   const handlePlayCurrentMatch = () => {
@@ -78,6 +85,20 @@ export function Home() {
     setActiveSection('maths');
     setActiveMetaTab('season');
     startRound(targetMode);
+  };
+  const handleRecommendedMath = () => {
+    setActiveSection('maths');
+    setRecommendedRouteActive(true);
+    setShowSeasonGuide(false);
+    startRound(dailyRecommendation.mathMode);
+  };
+  const handleRecommendedClock = () => {
+    setActiveSection('clock');
+    setShowSeasonGuide(false);
+  };
+  const handleManualModeChange = (nextMode) => {
+    setRecommendedRouteActive(false);
+    handleModeChange(nextMode);
   };
 
   return (
@@ -123,11 +144,19 @@ export function Home() {
         </button>
       </nav>
 
+      <RecommendedTraining
+        mathTitle={recommendedMathMode?.title ?? 'Desafio mixto'}
+        clockTitle={recommendedClockLevel?.title ?? 'Mixt'}
+        mathComplete={recommendedRouteActive && roundComplete}
+        onStartMath={handleRecommendedMath}
+        onStartClock={handleRecommendedClock}
+      />
+
       {activeSection === 'clock' ? (
-        <CatalanClockPractice />
+        <CatalanClockPractice initialLevel={dailyRecommendation.clockLevel} />
       ) : (
         <>
-          <ModeGrid activeMode={mode} onModeChange={handleModeChange} />
+          <ModeGrid activeMode={mode} onModeChange={handleManualModeChange} />
 
           <section className="practice-grid">
         <PracticePanel

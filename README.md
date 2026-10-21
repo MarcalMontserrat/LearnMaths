@@ -5,13 +5,13 @@ Aplicacion web pequena para practicar matematicas de 4.º de primaria en el nave
 ## Que incluye
 
 - Rondas de 10 ejercicios.
-- Modos de sumas y restas de hasta 5 cifras, multiplicaciones y divisiones exactas.
-- Seccion extra para aprender las horas en catalan con reloj, cuestionario y ayudas.
+- Modos de sumas y restas de hasta 5 cifras, multiplicaciones agrupadas, divisiones exactas y problemas escritos revisados.
+- Ruta diaria recomendada de matematicas y reloj, calculada por fecha sin guardar datos.
+- Seccion extra para aprender las horas en catalan con cuatro niveles, reloj, cuestionario sin repeticiones y ayudas.
 - Sistema de estrellas por intento y celebracion rapida por jugada.
 - Temporadas con calendario de partidos, victorias y copas.
 - Misiones, insignias, cofres y tienda visual.
-- Guardado local de estrellas totales y mejor racha.
-- Interfaz responsive sin backend.
+- Interfaz responsive sin backend ni almacenamiento persistente.
 
 ## Stack
 
@@ -65,7 +65,7 @@ src/
 - `src/features/practice/hooks/usePracticeSession.js` concentra el estado y las acciones de la ronda.
 - `src/features/practice/gameUtils.js` contiene la generacion de ejercicios y reglas de puntuacion.
 - `src/features/practice/gamificationUtils.js` gestiona temporada, recompensas, insignias y tienda.
-- `src/features/practice/config.js` mantiene modos, textos y claves de almacenamiento.
+- `src/features/practice/config.js` mantiene modos y textos.
 - `src/custom.css` conserva el estilo global de la aplicacion.
 
 ## Como se juega
@@ -123,6 +123,6 @@ Publica la carpeta `dist/`. El archivo `netlify.toml` ya incluye el redirect par
 
 ## Notas
 
-- El progreso se guarda en `localStorage`.
-- No hay API ni base de datos.
+- El progreso vive solo en memoria y se reinicia al recargar la pagina.
+- No hay API, base de datos ni uso de `localStorage`.
 - El proyecto parte de una sola app React en la raiz del repositorio.

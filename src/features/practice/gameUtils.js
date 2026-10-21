@@ -1,6 +1,6 @@
 import { MODE_LABELS } from './config';
 import { buildNotebookDescription } from './notebookUtils';
-export { readStoredNumber } from './storage';
+import { WORD_PROBLEMS } from './wordProblems';
 
 const randomInt = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min;
@@ -162,10 +162,32 @@ const createExactDivisionQuestion = () => {
   return createQuestion('div1', divisor * quotient, divisor);
 };
 
+const createWordProblemQuestion = () => {
+  const problem = pickOne(WORD_PROBLEMS);
+
+  return {
+    type: 'problems',
+    operator: '?',
+    left: null,
+    right: null,
+    label: MODE_LABELS.problems,
+    ...problem
+  };
+};
+
 export const createQuestionForMode = (mode) => {
   const effectiveMode =
     mode === 'mix'
-      ? pickOne(['sum', 'sub', 'mul2', 'mul3', 'mulLong', 'mul33', 'div1'])
+      ? pickOne([
+          'sum',
+          'sub',
+          'mul2',
+          'mul3',
+          'mulLong',
+          'mul33',
+          'div1',
+          'problems'
+        ])
       : mode;
 
   if (effectiveMode === 'sum') {
@@ -190,6 +212,10 @@ export const createQuestionForMode = (mode) => {
 
   if (effectiveMode === 'div1') {
     return createExactDivisionQuestion();
+  }
+
+  if (effectiveMode === 'problems') {
+    return createWordProblemQuestion();
   }
 
   return createLongMultiplicationQuestion();

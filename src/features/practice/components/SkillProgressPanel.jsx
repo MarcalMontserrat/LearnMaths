@@ -7,7 +7,8 @@ const SKILL_ICONS = {
   mul3: '🧠',
   mulLong: '🚀',
   mul33: '🎯',
-  div1: '➗'
+  div1: '➗',
+  problems: '📖'
 };
 
 export function SkillProgressPanel({ skills }) {

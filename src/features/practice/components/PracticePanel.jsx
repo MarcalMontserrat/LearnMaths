@@ -181,6 +181,14 @@ export function PracticePanel({
               inputRef={answerInputRef}
               onAnswerChange={onAnswerChange}
             />
+          ) : question.prompt ? (
+            <div className="word-problem-board" aria-live="polite">
+              <span className="word-problem-icon" aria-hidden="true">📖</span>
+              <div>
+                <span className="section-kicker">Lee, decide y calcula</span>
+                <p>{question.prompt}</p>
+              </div>
+            </div>
           ) : (
             <div className="question-board" aria-live="polite">
               <div className="question-row">
